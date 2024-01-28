@@ -196,8 +196,7 @@ func CreateDir(dirName, domain string) (string, error) {
 }
 
 // print banner in ascii art format
-func Banner() {
-	bannerPath := filepath.Join("../", "../", "cmd", "docs", "banner.txt")
+func Banner(bannerPath string) {
     b, err := os.ReadFile(bannerPath)
     if err != nil {
         panic(err)
