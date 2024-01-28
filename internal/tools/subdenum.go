@@ -2,13 +2,14 @@ package tools
 
 import (
 	"fmt"
-	"github/LiterallyEthical/pkg/logger"
-	"github/LiterallyEthical/pkg/subkill3r"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/LiterallyEthical/r3conwhal3/pkg/logger"
+	"github.com/LiterallyEthical/r3conwhal3/pkg/subkill3r"
 
 	"github.com/fatih/color"
 )

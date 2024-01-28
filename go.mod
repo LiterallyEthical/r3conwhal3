@@ -1,4 +1,4 @@
-module github/LiterallyEthical
+module github.com/LiterallyEthical/r3conwhal3
 
 go 1.21.1
 

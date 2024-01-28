@@ -3,12 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github/LiterallyEthical/internal/tools"
-	"github/LiterallyEthical/pkg/logger"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/LiterallyEthical/r3conwhal3/internal/tools"
+	"github.com/LiterallyEthical/r3conwhal3/pkg/logger"
 )
 
 
