@@ -1,4 +1,8 @@
-<h1 style="text-align: center;">r3conwhal3</h1>
+<div align="center">
+  <h1>r3conwhal3</h1>
+</div>
+
+
 
 <p align="center">
   <img src="assets/images/r3conwhal3.png" alt="r3conwhal3 Logo" class="img-circle" width=200 height=200>
