@@ -197,35 +197,12 @@ func CreateDir(dirName, domain string) (string, error) {
 
 // print banner in ascii art format
 func Banner() {
-	bannerPath := filepath.Join(GetProjectRoot(), "docs", "banner.txt")
+	bannerPath := filepath.Join("cmd", "docs", "banner.txt")
     b, err := os.ReadFile(bannerPath)
     if err != nil {
         panic(err)
     }
     fmt.Println(color.CyanString(string(b)))
 }
-
-// get project root directory
-func GetProjectRoot() string {
-	dir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	// determines the root directory according to go.mod file's existence
-	for {
-		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
-			return dir
-		}
-
-		// Move up one directory
-		parent := filepath.Dir(dir)
-		if parent == dir {
-			panic("project root not found")
-		}
-		dir = parent
-	}
-}
-
 
 // Filter live domains
