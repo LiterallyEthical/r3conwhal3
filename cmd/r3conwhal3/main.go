@@ -36,7 +36,7 @@ func main() {
 
 	// Define flags
 	var domain, fileName, dirName string
-	wordlist := filepath.Join("cmd", "docs", "subdomains-1000.txt")
+	wordlist := filepath.Join("../", "docs", "subdomains-1000.txt")
 	workerCount := 1000
 	serverAddr := "8.8.8.8:53"
 	flag.StringVar(&domain, "domain",  "", "Target domain to enumerate")
