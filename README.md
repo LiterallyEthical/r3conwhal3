@@ -5,7 +5,7 @@
 </div>
 
 <p align="center">
-  <a href="#💿-installation">Installation</a> •
+  <a href="#installation">Installation</a> •
   <a href="#usage">Usage</a> •
   <a href="#features">Features</a> •
   <a href="#disclaimer">Disclaimer</a> •
@@ -15,7 +15,7 @@
 
 `r3conwhale` aims to develop a multifunctional  recon chain for web applications, intelligently interpreting collected data, and optimizing  performance and resource consumption through a concurrency-based approach.
 
-# 💿 Installation
+# Installation
 
 - `r3conwhal3` requires go >= 1.21.1+ to install and paths correctly set ($GOPATH, $GOROOT). 
 
