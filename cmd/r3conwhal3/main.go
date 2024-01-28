@@ -33,10 +33,13 @@ func main() {
 	// Set the default value for dirName
 	defaultDir := filepath.Join(homeDir, "r3conwhal3", "results")
 
+	// Set the bannerPath  
+	bannerPath := filepath.Join("cmd", "r3conwhal3", "docs", "banner.txt")
+
 
 	// Define flags
 	var domain, fileName, dirName string
-	wordlist := filepath.Join("../", "docs", "subdomains-1000.txt")
+	wordlist := filepath.Join("cmd", "r3conwhal3", "docs", "subdomains-1000.txt")
 	workerCount := 1000
 	serverAddr := "8.8.8.8:53"
 	flag.StringVar(&domain, "domain",  "", "Target domain to enumerate")
@@ -45,7 +48,7 @@ func main() {
 	flag.Parse()
 
 	
-	tools.Banner()
+	tools.Banner(bannerPath)
 
 
 	// Check if the domain is provided or not
