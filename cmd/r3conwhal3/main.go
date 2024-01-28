@@ -33,13 +33,20 @@ func main() {
 	// Set the default value for dirName
 	defaultDir := filepath.Join(homeDir, "r3conwhal3", "results")
 
-	// Set the bannerPath  
-	bannerPath := filepath.Join("cmd", "r3conwhal3", "docs", "banner.txt")
+	// Get the path to the executable
+	executablePath, err := os.Executable()
+	if err != nil {
+		fmt.Println("Error getting the executable path:", err)
+		os.Exit(1)
+	}
 
+	// Build the path to banner.txt relative to the directory containing the executable
+	bannerPath := filepath.Join(filepath.Dir(executablePath), "docs", "banner.txt")
 
+	
 	// Define flags
 	var domain, fileName, dirName string
-	wordlist := filepath.Join("cmd", "r3conwhal3", "docs", "subdomains-1000.txt")
+	wordlist := filepath.Join(filepath.Dir(executablePath), "docs", "subdomains-1000.txt")
 	workerCount := 1000
 	serverAddr := "8.8.8.8:53"
 	flag.StringVar(&domain, "domain",  "", "Target domain to enumerate")
