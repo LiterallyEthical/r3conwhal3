@@ -34,20 +34,19 @@ go install -v github.com/LiterallyEthical/r3conwhal3/cmd/r3conwhal3@latest
 Run the following command to install dependencies
 
 ```
+wget "https://raw.githubusercontent.com/LiterallyEthical/r3conwhal3/main/installer.sh"
+chmod +x installer.sh
+./installer.sh
+```
+
+OR
+
+```
 git clone https://github.com/LiterallyEthical/r3conwhal3
 cd r3conwhal3/
 chmod +x installer.sh
 ./installer.sh
 ```
-OR
-
-```
-wget "https://github.com/LiterallyEthical/r3conwhal3/installer.sh"
-chmod +x installer.sh
-./installer.sh
-```
-
-
 
 # Usage
 
