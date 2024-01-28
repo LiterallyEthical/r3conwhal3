@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github/literallyethical/internal/tools"
-	"github/literallyethical/pkg/logger"
+	"github/LiterallyEthical/internal/tools"
+	"github/LiterallyEthical/pkg/logger"
 	"log"
 	"os"
 	"path"

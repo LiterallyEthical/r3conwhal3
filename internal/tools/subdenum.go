@@ -2,8 +2,8 @@ package tools
 
 import (
 	"fmt"
-	"github/literallyethical/pkg/logger"
-	"github/literallyethical/pkg/subkill3r"
+	"github/LiterallyEthical/pkg/logger"
+	"github/LiterallyEthical/pkg/subkill3r"
 	"log"
 	"os"
 	"path/filepath"
