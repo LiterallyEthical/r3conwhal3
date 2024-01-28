@@ -47,6 +47,13 @@ cd r3conwhal3/
 chmod +x installer.sh
 ./installer.sh
 ```
+<div align="center">
+  
+| :exclamation:  **Disclaimer**  |
+|:-------------------:|
+| **This project is in active development**. Expect breaking changes with releases. |
+
+</div>
 
 # Usage
 
