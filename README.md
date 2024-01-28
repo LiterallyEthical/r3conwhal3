@@ -1,8 +1,12 @@
+<link rel="stylesheet" type="text/css" href="assets/styles/styles.css">
+
 <h1 style="text-align: center;">r3conwhal3</h1>
 
-<div style="text-align:center;">
-  <img src="assets/images/r3conwhal3.png" alt="R3conKill3r Logo" style="border-radius: 50%; width: 200px; height: 200px;">
-</div>
+<p align="center">
+  <img src="assets/images/r3conwhal3.png" alt="R3conKill3r Logo" class="img-circle">
+</p>
+
+
 
 <p align="center">
   <a href="#installation">Installation</a> •
