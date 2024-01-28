@@ -1,9 +1,7 @@
-<link rel="stylesheet" type="text/css" href="assets/styles/styles.css">
-
 <h1 style="text-align: center;">r3conwhal3</h1>
 
 <p align="center">
-  <img src="assets/images/r3conwhal3.png" alt="R3conKill3r Logo" class="img-circle">
+  <img src="assets/images/r3conwhal3.png" alt="r3conwhal3 Logo" class="img-circle" width=200 height=200>
 </p>
 
 
