@@ -40,13 +40,6 @@ func main() {
 	// Set the default value for dirName
 	defaultDir := filepath.Join(homeDir, "r3conwhal3", "results")
 	
-	// Get the path to the executable
-	executablePath, err := os.Executable()
-	if err != nil {
-		log.Panic("Error getting the executable path:", err)
-		os.Exit(1)
-	}
-
 	// Accessing files from the embedded docs directory
 	data, err := fs.ReadFile(content, "docs/banner.txt")
 	if err != nil {
@@ -58,13 +51,13 @@ func main() {
 	fmt.Println(color.CyanString(string(data)))
 	
 	// Define flags
-	var domain, fileName, dirName string
-	wordlist := filepath.Join(filepath.Dir(executablePath), "docs", "subdomains-1000.txt")
+	var domain, fileName, dirName, wordlist string
 	workerCount := 1000
 	serverAddr := "8.8.8.8:53"
 	flag.StringVar(&domain, "domain",  "", "Target domain to enumerate")
 	flag.StringVar(&fileName, "file-name", "subdomains.txt", "File to write subdomains")
 	flag.StringVar(&dirName, "dir-name", defaultDir, "Directory to keep all output")
+	flag.StringVar(&wordlist, "wordlist", "none", "provides subdomain prefixes in order to run subkill3r")
 	flag.Parse()
 
 
