@@ -264,10 +264,14 @@ func InitSubdEnum(domain, filePath, dirPath, wordlist, serverAddr string, worker
 	// if err := RunAmass(domain, filePath); err != nil {
 	// 	myLogger.Error("Error running amass for domain %s: %v\n", domain, err)	 
 	// }
-
- 	if err := RunSubkill3r(domain, filePath, wordlist, serverAddr, workerCount); err != nil {
-		myLogger.Error("Error running custom subdomain enumerator for domain %s: %v\n", domain, err)
-	 }
+	
+	if wordlist != "none" {
+		if err := RunSubkill3r(domain, filePath, wordlist, serverAddr, workerCount); err != nil {
+			myLogger.Error("Error running custom subdomain enumerator for domain %s: %v\n", domain, err)
+		 }
+	} else {
+		myLogger.Warning("subkill3r is not activated because wordlist is not provided\n")
+	}
  	
 	// Count total enumerated subdomains
 	subCount, err := countLines(filePath)
