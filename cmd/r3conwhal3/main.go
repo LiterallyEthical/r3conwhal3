@@ -1,8 +1,10 @@
 package main
 
 import (
+	"embed"
 	"flag"
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 	"path"
@@ -10,6 +12,7 @@ import (
 
 	"github.com/LiterallyEthical/r3conwhal3/internal/tools"
 	"github.com/LiterallyEthical/r3conwhal3/pkg/logger"
+	"github.com/fatih/color"
 )
 
 
@@ -18,7 +21,11 @@ import (
 var (
 	cmds = []string{ "subfinder", "assetfinder", "amass", "httpx"}
 	myLogger logger.Logger
+	//go:embed docs/banner.txt docs/subdomains-1000.txt
+	content embed.FS
 )
+
+
 
 
 func main() {
@@ -32,17 +39,23 @@ func main() {
 
 	// Set the default value for dirName
 	defaultDir := filepath.Join(homeDir, "r3conwhal3", "results")
-
+	
 	// Get the path to the executable
 	executablePath, err := os.Executable()
 	if err != nil {
-		fmt.Println("Error getting the executable path:", err)
+		log.Fatal("Error getting the executable path:", err)
 		os.Exit(1)
 	}
 
-	// Build the path to banner.txt relative to the directory containing the executable
-	bannerPath := filepath.Join(filepath.Dir(executablePath), "docs", "banner.txt")
+	// Accessing files from the embedded docs directory
+	data, err := fs.ReadFile(content, "docs/banner.txt")
+	if err != nil {
+		log.Fatal("Error reading banner.txt:", err)
+		os.Exit(1)
+	}
 
+	// Print the banner
+	fmt.Println(color.CyanString(string(data)))
 	
 	// Define flags
 	var domain, fileName, dirName string
@@ -54,8 +67,6 @@ func main() {
 	flag.StringVar(&dirName, "dir-name", defaultDir, "Directory to keep all output")
 	flag.Parse()
 
-	
-	tools.Banner(bannerPath)
 
 
 	// Check if the domain is provided or not
