@@ -43,14 +43,14 @@ func main() {
 	// Get the path to the executable
 	executablePath, err := os.Executable()
 	if err != nil {
-		log.Fatal("Error getting the executable path:", err)
+		log.Panic("Error getting the executable path:", err)
 		os.Exit(1)
 	}
 
 	// Accessing files from the embedded docs directory
 	data, err := fs.ReadFile(content, "docs/banner.txt")
 	if err != nil {
-		log.Fatal("Error reading banner.txt:", err)
+		log.Panic("Error reading banner.txt:", err)
 		os.Exit(1)
 	}
 
