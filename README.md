@@ -64,21 +64,34 @@ chmod +x installer.sh
 | -domain| Target domain to enumerate |
 | -dir-name | Directory to keep all output (default "$HOME/r3conwhal3/results") |
 | -file-name | File to store gathered subdomains (default "subdomains.txt") |
+| -wordlist | Subdomain name list in order to run subkill3r (default "none") | 
 | -help | Show help menu | 
 
 ## Example Usage
 
-### Running the full scan with default options
+### Running the scan with default options
 ```
 r3conwhal3 -domain <domain-name>
 ```
 
-### Running the full scan with custom options
+### Running the scan with custom options
 
 ```
 r3conwhal3 <domain-name> [<-dir-name>] [<-file-name>] 
 ```
 
+### Running the full scan 
+
+```
+r3conwhal3 <domain-name> [<-dir-name>] [<-file-name>] [<-wordlist>]
+```
+<div align="center">
+
+| :exclamation:  **Disclaimer**  |
+|:-------------------:|
+| [**subkille3r**](https://github.com/LiterallyEthical/r3conwhal3/blob/main/pkg/subkill3r/subkill3r.go) is in active development. By default it's excluded from the recon chain but if you want to use it, simply supply a wordlist that contains subdomain names. |
+
+</div>
 
 # Features
 
