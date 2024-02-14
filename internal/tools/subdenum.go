@@ -261,9 +261,9 @@ func InitSubdEnum(domain, filePath, dirPath, wordlist, serverAddr string, worker
 		myLogger.Error("Error running assetfinder for domain %s: %v\n", domain, err)
 	}
 
-	// if err := RunAmass(domain, filePath); err != nil {
-	// 	myLogger.Error("Error running amass for domain %s: %v\n", domain, err)	 
-	// }
+	if err := RunAmass(domain, filePath); err != nil {
+		myLogger.Error("Error running amass for domain %s: %v\n", domain, err)	 
+	}
 	
 	if wordlist != "none" {
 		if err := RunSubkill3r(domain, filePath, wordlist, serverAddr, workerCount); err != nil {
