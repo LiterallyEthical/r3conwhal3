@@ -223,7 +223,7 @@ func RunHTTPX(filePath, dirPath string) error {
 	// Show progress
 	showProgress()
 
-	_, err := runCommand("httpx", "-fc", "404", "-l", filePath, "-o", liveSubdomains)
+	_, err := runCommand("httpx", "-l", filePath, "-o", liveSubdomains)
 	if err != nil {
 		return err
 	}
