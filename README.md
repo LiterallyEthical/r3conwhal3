@@ -62,9 +62,8 @@ chmod +x installer.sh
 | Flag | Description |
 |:---------|:---------|
 | -domain| Target domain to enumerate |
-| -dir-name | Directory to keep all output (default "$HOME/r3conwhal3/results") |
-| -file-name | File to store gathered subdomains (default "subdomains.txt") |
-| -wordlist | Subdomain name list in order to run subkill3r (default "none") | 
+| -outDir | Directory to keep all output (default "$HOME/r3conwhal3/results") |
+| -file-name | File to store gathered subdomains (default "subdomains.txt") | 
 | -help | Show help menu | 
 
 ## Example Usage
