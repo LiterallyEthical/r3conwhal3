@@ -268,7 +268,8 @@ func InitSubdEnum(domain, filePath, dirPath, wordlist, serverAddr string, worker
 	
 	if wordlist != "none" {
 		if err := RunSubkill3r(domain, filePath, wordlist, serverAddr, workerCount); err != nil {
-			myLogger.Error("Error running custom subdomain enumerator for domain %s: %v\n", domain, err)
+			myLogger.Error("Error running subkill3r for domain %s: %v", domain, err)
+			myLogger.Warning("Look for SUBKILL3R_WORDLIST in config file to specify a wordlist\n")
 		 }
 	} else {
 		myLogger.Warning("subkill3r is not activated because wordlist is not provided\n")
