@@ -8,16 +8,13 @@ import (
 	"log"
 	"os"
 	"path"
-	"path/filepath"
+	"strconv"
 
 	"github.com/LiterallyEthical/r3conwhal3/internal/mods"
 	"github.com/LiterallyEthical/r3conwhal3/internal/utils"
 	"github.com/LiterallyEthical/r3conwhal3/pkg/logger"
 	"github.com/fatih/color"
 )
-
-
-
 
 var (
 	cmds = []string{ "subfinder", "assetfinder", "amass", "httpx"}
@@ -31,16 +28,11 @@ var (
 
 func main() {
 
-	// Get the user's home directory
-	homeDir, err := os.UserHomeDir()
+	config, err := utils.LoadConfig("../../")
 	if err != nil {
-		log.Fatalf(fmt.Sprintf("Couldn't find user's home directory, %v", err))
-		return
+		log.Fatal("cannot load config:", err)
 	}
 
-	// Set the default value for outDir
-	defaultDir := filepath.Join(homeDir, "r3conwhal3", "results")
-	
 	// Accessing files from the embedded docs directory
 	data, err := fs.ReadFile(content, "docs/banner.txt")
 	if err != nil {
@@ -52,15 +44,21 @@ func main() {
 	fmt.Println(color.CyanString(string(data)))
 	
 	// Define flags
-	var domain, fileName, outDir, wordlist string
-	workerCount := 1000
-	serverAddr := "8.8.8.8:53"
-	flag.StringVar(&domain, "domain",  "", "Target domain to enumerate")
-	flag.StringVar(&fileName, "file-name", "subdomains.txt", "File to write subdomains")
-	flag.StringVar(&outDir, "out-dir", defaultDir, "Directory to keep all output")
-	flag.StringVar(&wordlist, "wordlist", "none", "provides subdomain prefixes in order to run subkill3r")
-	flag.Parse()
+	var domain, fileName, outDir string
 
+	// Define variables for subkill3r
+	workerCount, err := strconv.Atoi(config.Subkill3rWorkerCount)
+	if err != nil {
+		panic(err)
+		//myLogger.Error("error running subkill3r: workerCount is type string instead of int" , err)
+	}
+	serverAddr := config.Subkill3rServerAddr
+	wordlist := config.Subkill3rWordlist
+
+	flag.StringVar(&domain, "domain",  "", "Target domain to enumerate")
+	flag.StringVar(&outDir, "out-dir", config.OutDir, "Directory to keep all output")
+	flag.StringVar(&fileName, "file-name", config.FileName, "File to write subdomains")
+	flag.Parse()
 
 
 	// Check if the domain is provided or not
@@ -86,6 +84,5 @@ func main() {
 	if err := mods.InitSubdEnum(domain, filePath, dirPath, wordlist, serverAddr, workerCount); err != nil {
 		log.Fatal(err)
 	}
-	
-	
+
 }
