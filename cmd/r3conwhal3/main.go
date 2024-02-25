@@ -2,18 +2,18 @@ package main
 
 import (
 	"embed"
-	"flag"
 	"fmt"
 	"io/fs"
 	"log"
 	"os"
 	"path"
 	"strconv"
-
 	"github.com/LiterallyEthical/r3conwhal3/internal/mods"
 	"github.com/LiterallyEthical/r3conwhal3/internal/utils"
 	"github.com/LiterallyEthical/r3conwhal3/pkg/logger"
 	"github.com/fatih/color"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -28,10 +28,6 @@ var (
 
 func main() {
 
-	config, err := utils.LoadConfig("../../")
-	if err != nil {
-		log.Fatal("cannot load config:", err)
-	}
 
 	// Accessing files from the embedded docs directory
 	data, err := fs.ReadFile(content, "docs/banner.txt")
@@ -44,7 +40,35 @@ func main() {
 	fmt.Println(color.CyanString(string(data)))
 	
 	// Define flags
-	var domain, fileName, outDir string
+	var domain, fileName, outDir, configDir string
+
+
+	pflag.StringVarP(&domain, "domain", "d", "", "Target domain to enumerate")
+    pflag.StringVarP(&configDir, "config-dir", "c", "", "Path to directory which config file(config.env) exists")
+    pflag.StringVarP(&outDir, "out-dir", "o", "$HOME/user/r3conwhal3/results", "Directory to keep all output")
+    pflag.StringVarP(&fileName, "file-name", "f", "subdomains.txt", "File to write subdomains")
+	pflag.Parse()
+
+
+	config, err := utils.LoadConfig(configDir)
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+
+    // Set the flag value from the config if not explicitly set via command line
+    if !pflag.Lookup("out-dir").Changed {
+		// Get the value from config, if flag is not set
+        outDir = viper.GetString("OUT_DIR") 
+    }
+
+	if !pflag.Lookup("file-name").Changed {
+        fileName = viper.GetString("FILE_NAME") 
+    }
+
+	// Binding variables from config.env to flags	
+	viper.BindPFlag("OUT_DIR", pflag.Lookup("out-dir"))
+	viper.BindPFlag("FILE_NAME", pflag.Lookup("file-name"))
+
 
 	// Define variables for subkill3r
 	workerCount, err := strconv.Atoi(config.Subkill3rWorkerCount)
@@ -54,11 +78,6 @@ func main() {
 	}
 	serverAddr := config.Subkill3rServerAddr
 	wordlist := config.Subkill3rWordlist
-
-	flag.StringVar(&domain, "domain",  "", "Target domain to enumerate")
-	flag.StringVar(&outDir, "out-dir", config.OutDir, "Directory to keep all output")
-	flag.StringVar(&fileName, "file-name", config.FileName, "File to write subdomains")
-	flag.Parse()
 
 
 	// Check if the domain is provided or not
