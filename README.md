@@ -62,7 +62,7 @@ chmod +x installer.sh
 | Flag | Description |
 |:---------|:---------|
 | -domain| Target domain to enumerate |
-| -outDir | Directory to keep all output (default "$HOME/r3conwhal3/results") |
+| -out-dir | Directory to keep all output (default "$HOME/r3conwhal3/results") |
 | -file-name | File to store gathered subdomains (default "subdomains.txt") | 
 | -help | Show help menu | 
 
