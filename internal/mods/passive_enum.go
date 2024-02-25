@@ -1,4 +1,4 @@
-package tools
+package mods
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/LiterallyEthical/r3conwhal3/internal/utils"
 	"github.com/LiterallyEthical/r3conwhal3/pkg/logger"
 	"github.com/LiterallyEthical/r3conwhal3/pkg/subkill3r"
 
@@ -17,7 +18,6 @@ import (
 
 var myLogger logger.Logger
 var subCount int
-
 
 func init() {
 	// Init the logger during package initialization
@@ -30,26 +30,27 @@ func init() {
 }
 
 
+
 func RunSubfinder(domain, filePath string) (error) {
 	// fmt.Printf("\n[+]Starting subfinder\n")
 	myLogger.Info("Running subfinder")
 	
 	// printing the execution time
 	startTime := time.Now()
-	defer logElapsedTime(startTime, "subfinder")
+	defer utils.LogElapsedTime(startTime, "subfinder")
 	
 	// Show progress
-	showProgress()
+	utils.ShowProgress()
 
 	// Run subfinder
-	_ , err := runCommand("subfinder", "-d", domain, "-o", filePath)
+	_ , err := utils.RunCommand("subfinder", "-d", domain, "-o", filePath)
 	if err != nil {
 		return err
 	}
 	
 
 	// Count enumareted subdomains
-	subCount, err = countLines(filePath)
+	subCount, err = utils.CountLines(filePath)
 	if err != nil {
 		// log.Printf("Error measuring enumerated subdomains: %v ", err) 
 		myLogger.Warning("Failed to measure number of gathered subdomains: %v", err)
@@ -68,13 +69,13 @@ func RunAssetfinder(domain, filePath string) (error) {
 	
 	// printing the execution time
 	startTime := time.Now()
-	defer logElapsedTime(startTime, "assetfinder")
+	defer utils.LogElapsedTime(startTime, "assetfinder")
 	
 	// Show progress
-	showProgress()
+	utils.ShowProgress()
 
 	// Run assetfinder
-	output , err := runCommand("assetfinder", "-subs-only", domain)
+	output , err := utils.RunCommand("assetfinder", "-subs-only", domain)
 	if err != nil {
 		return err
 	}
@@ -83,7 +84,7 @@ func RunAssetfinder(domain, filePath string) (error) {
 
 	
 	// Write output to specified file
-	err = appendToFile(filePath, output)
+	err = utils.AppendToFile(filePath, output)
 	if err != nil {
 		//log.Printf("Error appending to file %s: %v", filePath, err)
 		myLogger.Warning("Error appending to file %s: %v", filePath, err)
@@ -92,7 +93,7 @@ func RunAssetfinder(domain, filePath string) (error) {
 	// Count enumareted subdomains
 	
 	oldSubCount := subCount
-	subCount, err = countLines(filePath)
+	subCount, err = utils.CountLines(filePath)
 	if err != nil {
 		//log.Printf("Error measuring enumerated subdomains: %v ", err) 
 		myLogger.Warning("Error measuring enumerated subdomains: %v ", err)
@@ -111,13 +112,13 @@ func RunAmass(domain, filePath string) (error) {
 
 	// printing the execution time
 	startTime := time.Now()
-	defer logElapsedTime(startTime, "amass")
+	defer utils.LogElapsedTime(startTime, "amass")
 	
 	// Show progress
-	showProgress()
+	utils.ShowProgress()
 
 	// Run amass
-	output , err := runCommand("amass", "enum", "-passive", "-timeout", "1", "-d", domain)
+	output , err := utils.RunCommand("amass", "enum", "-passive", "-timeout", "1", "-d", domain)
 	if err != nil {
 		return err
 	}
@@ -143,14 +144,14 @@ func RunAmass(domain, filePath string) (error) {
 
 
 	// Write output to specified file
-	err = appendToFile(filePath, filteredOutput)
+	err = utils.AppendToFile(filePath, filteredOutput)
 	if err != nil {
 		myLogger.Warning("Error appending to file %s: %v", filePath, err)
 	}
 
 	// Count enumareted subdomains
 	oldSubCount := subCount
-	subCount, err := countLines(filePath)
+	subCount, err := utils.CountLines(filePath)
 	if err != nil {
 		myLogger.Warning("Error measuring enumerated subdomains: %v ", err) 
 	}
@@ -168,10 +169,10 @@ func RunSubkill3r(domain, filePath, wordlist, serverAddr string, workerCount int
 	
 	// printing the execution time
 	startTime := time.Now()
-	defer logElapsedTime(startTime, "subkill3r")
+	defer utils.LogElapsedTime(startTime, "subkill3r")
 
 	// Show progress
-	showProgress()
+	utils.ShowProgress()
 
 	var filteredResults []string
 	results, err := subkill3r.Subkill3r(domain, wordlist, serverAddr, workerCount)
@@ -200,7 +201,7 @@ func RunSubkill3r(domain, filePath, wordlist, serverAddr string, workerCount int
 	
 	// Count enumareted subdomains
 	oldSubCount := subCount
-	subCount, err := countLines(filePath)
+	subCount, err := utils.CountLines(filePath)
 	if err != nil {
 		log.Printf("Error measuring enumerated subdomains: %v ", err) 
 	}
@@ -218,12 +219,12 @@ func RunHTTPX(filePath, dirPath string) error {
 	
 	// printing the execution time
 	startTime := time.Now()
-	defer logElapsedTime(startTime, "httpx")
+	defer utils.LogElapsedTime(startTime, "httpx")
 
 	// Show progress
-	showProgress()
+	utils.ShowProgress()
 
-	_, err := runCommand("httpx", "-l", filePath, "-o", liveSubdomains)
+	_, err := utils.RunCommand("httpx", "-l", filePath, "-o", liveSubdomains)
 	if err != nil {
 		return err
 	}
@@ -234,7 +235,7 @@ func RunHTTPX(filePath, dirPath string) error {
 	// 	return fmt.Errorf("Error appending to file %s: %v", filePath, err)
 	// }
 
-	subCount, err := countLines(liveSubdomains)
+	subCount, err := utils.CountLines(liveSubdomains)
 	if err != nil {
 		myLogger.Warning("Failed to measure live subdomains: %v", err)
 	}
@@ -274,7 +275,7 @@ func InitSubdEnum(domain, filePath, dirPath, wordlist, serverAddr string, worker
 	}
  	
 	// Count total enumerated subdomains
-	subCount, err := countLines(filePath)
+	subCount, err := utils.CountLines(filePath)
 	if err != nil {
 		myLogger.Error("\rError measuring enumerated subdomains: %v ", err)
 	}
@@ -282,13 +283,13 @@ func InitSubdEnum(domain, filePath, dirPath, wordlist, serverAddr string, worker
 	
 	
 	// Removing duplicates: FATAL
-	if err := RemoveDuplicatesFromFile(filePath); err != nil {
+	if err := utils.RemoveDuplicatesFromFile(filePath); err != nil {
 	 	return fmt.Errorf(color.RedString("subenum module failed: error removing duplicates from the file %s: %v ", filePath, err))
 	}
 	myLogger.Info("Removing duplicates from %s", filePath)
  	
 	// Count unique subdomains
-	subCount, err = countLines(filePath)
+	subCount, err = utils.CountLines(filePath)
 	if err != nil {
 		myLogger.Warning("\rError measuring enumerated subdomains: %v ", err) 
 	}

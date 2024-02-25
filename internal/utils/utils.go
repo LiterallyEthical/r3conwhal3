@@ -1,4 +1,4 @@
-package tools
+package utils
 
 import (
 	"bufio"
@@ -9,12 +9,24 @@ import (
 	"strings"
 	"time"
 
+	"github.com/LiterallyEthical/r3conwhal3/pkg/logger"
 	"github.com/fatih/color"
 )
 
 
+var myLogger logger.Logger
 
-func runCommand(command string, args ...string) ([]byte, error) {
+func init() {
+	// Init the logger during package initialization
+	log, err := logger.NewLogger(0,0,0)
+	if err != nil {
+		panic(err)
+	}
+	
+	myLogger = log	
+}
+
+func RunCommand(command string, args ...string) ([]byte, error) {
 	cmd := exec.Command(command, args...)
 
 	// Capture command output
@@ -26,7 +38,7 @@ func runCommand(command string, args ...string) ([]byte, error) {
 	return output, nil
 }
 
-func appendToFile(filePath string, content []byte) error {
+func AppendToFile(filePath string, content []byte) error {
 	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return fmt.Errorf("error opening or creating file %s: %v", filePath, err)
@@ -41,7 +53,7 @@ func appendToFile(filePath string, content []byte) error {
 	return nil
 }
 
-func showProgress() {
+func ShowProgress() {
 	// Simulate progress with a simple animation
 	animation := []string{".", "..", "...", "...."}
 	
@@ -54,7 +66,7 @@ func showProgress() {
 	}
 }
 
-func logElapsedTime(startTime time.Time, operation string) {
+func LogElapsedTime(startTime time.Time, operation string) {
 	elapsedTime := time.Since(startTime)
 	myLogger.Info("%s completed in %s\n", operation, elapsedTime)
 }
@@ -63,7 +75,7 @@ func CheckInstallations(tools []string) error {
 	// fmt.Printf("[+]Start checking required tools\n")
 	myLogger.Info(color.CyanString("Checking required tools\n"))
 
-	showProgress()
+	ShowProgress()
 
 	//versionRegex := regexp.MustCompile(`(\d+\.\d+\.\d+)`)
 	
@@ -95,7 +107,7 @@ func CheckInstallations(tools []string) error {
 	return nil
 }
 
-func countLines(filename string) (int, error) {
+func CountLines(filename string) (int, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return 0, err

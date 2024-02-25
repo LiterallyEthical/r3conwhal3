@@ -10,7 +10,8 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/LiterallyEthical/r3conwhal3/internal/tools"
+	"github.com/LiterallyEthical/r3conwhal3/internal/mods"
+	"github.com/LiterallyEthical/r3conwhal3/internal/utils"
 	"github.com/LiterallyEthical/r3conwhal3/pkg/logger"
 	"github.com/fatih/color"
 )
@@ -33,7 +34,7 @@ func main() {
 	// Get the user's home directory
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatal(fmt.Sprintf("Couldn't find user's home directory, %v", err))
+		log.Fatalf(fmt.Sprintf("Couldn't find user's home directory, %v", err))
 		return
 	}
 
@@ -69,12 +70,12 @@ func main() {
 	}
 
 	// Check for installation of the required tools
-	if err := tools.CheckInstallations(cmds); err != nil {
+	if err := utils.CheckInstallations(cmds); err != nil {
 		log.Fatal(err)
 	}
 
 	// Create directory to keep all output
-	dirPath, err := tools.CreateDir(dirName, domain)
+	dirPath, err := utils.CreateDir(dirName, domain)
 	if err != nil {
 		myLogger.Error("Failed to create directory: %v, %v", dirName, err)
 	}
@@ -82,7 +83,7 @@ func main() {
 	// Join full path
 	filePath := path.Join(dirPath, fileName)
 	
-	if err := tools.InitSubdEnum(domain, filePath, dirPath, wordlist, serverAddr, workerCount); err != nil {
+	if err := mods.InitSubdEnum(domain, filePath, dirPath, wordlist, serverAddr, workerCount); err != nil {
 		log.Fatal(err)
 	}
 	
