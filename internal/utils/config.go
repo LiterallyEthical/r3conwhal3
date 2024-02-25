@@ -38,7 +38,8 @@ func LoadConfig(path string) (config Config, err error) {
 	// Setting default values
 	viper.SetDefault("OUT_DIR", defaultDir)
 	viper.SetDefault("FILE_NAME", "subdomains.txt")	
-	viper.SetDefault("SUBKILL3R_WORDLIST", "docs/subdomains-1000.txt")
+	viper.SetDefault("SUBKILL3R_WORDLIST", "")
+
 
 
 	err = viper.ReadInConfig()
