@@ -38,7 +38,7 @@ func main() {
 		return
 	}
 
-	// Set the default value for dirName
+	// Set the default value for outDir
 	defaultDir := filepath.Join(homeDir, "r3conwhal3", "results")
 	
 	// Accessing files from the embedded docs directory
@@ -52,12 +52,12 @@ func main() {
 	fmt.Println(color.CyanString(string(data)))
 	
 	// Define flags
-	var domain, fileName, dirName, wordlist string
+	var domain, fileName, outDir, wordlist string
 	workerCount := 1000
 	serverAddr := "8.8.8.8:53"
 	flag.StringVar(&domain, "domain",  "", "Target domain to enumerate")
 	flag.StringVar(&fileName, "file-name", "subdomains.txt", "File to write subdomains")
-	flag.StringVar(&dirName, "dir-name", defaultDir, "Directory to keep all output")
+	flag.StringVar(&outDir, "out-dir", defaultDir, "Directory to keep all output")
 	flag.StringVar(&wordlist, "wordlist", "none", "provides subdomain prefixes in order to run subkill3r")
 	flag.Parse()
 
@@ -65,7 +65,7 @@ func main() {
 
 	// Check if the domain is provided or not
 	if domain == "" {
-		fmt.Println("Usage: go run main.go -domain <domain> [-fileName <fileName>] [-dirName <dirName>]")
+		fmt.Println("Usage: go run main.go -domain <domain> [-fileName <fileName>] [-outDir <outDir>]")
 		return
 	}
 
@@ -75,9 +75,9 @@ func main() {
 	}
 
 	// Create directory to keep all output
-	dirPath, err := utils.CreateDir(dirName, domain)
+	dirPath, err := utils.CreateDir(outDir, domain)
 	if err != nil {
-		myLogger.Error("Failed to create directory: %v, %v", dirName, err)
+		myLogger.Error("Failed to create directory: %v, %v", outDir, err)
 	}
 
 	// Join full path
