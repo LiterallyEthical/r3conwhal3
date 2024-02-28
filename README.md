@@ -61,7 +61,7 @@ chmod +x installer.sh
 
 | Flag | Description |
 |:---------|:---------|
-| -c, --config-dir | Path to directory which config file(config.env) exists |
+| -c, --config-dir | Path to directory which config.env exists (default "embedded") |
 | -d, --domain| Target domain to enumerate |
 | -f, --file-name | File to store gathered subdomains (default "subdomains.txt") |
 | -o, --out-dir | Directory to keep all output (default "$HOME/r3conwhal3/results") |
