@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+
 	"github.com/LiterallyEthical/r3conwhal3/internal/mods"
 	"github.com/LiterallyEthical/r3conwhal3/internal/utils"
 	"github.com/LiterallyEthical/r3conwhal3/pkg/logger"
@@ -19,8 +20,8 @@ import (
 var (
 	cmds = []string{ "subfinder", "assetfinder", "amass", "httpx"}
 	myLogger logger.Logger
-	//go:embed docs/banner.txt docs/subdomains-1000.txt
-	content embed.FS
+	//go:embed docs/*
+	docFS embed.FS
 )
 
 
@@ -29,7 +30,7 @@ func main() {
 
 
 	// Accessing files from the embedded docs directory
-	data, err := fs.ReadFile(content, "docs/banner.txt")
+	data, err := fs.ReadFile(docFS, "docs/banner.txt")
 	if err != nil {
 		log.Panic("Error reading banner.txt:", err)
 		os.Exit(1)
@@ -43,13 +44,13 @@ func main() {
 
 
 	pflag.StringVarP(&domain, "domain", "d", "", "Target domain to enumerate")
-    pflag.StringVarP(&configDir, "config-dir", "c", "", "Path to directory which config file(config.env) exists")
+    pflag.StringVarP(&configDir, "config-dir", "c", "embedded", "Path to directory which config file(config.env) exists")
     pflag.StringVarP(&outDir, "out-dir", "o", "$HOME/user/r3conwhal3/results", "Directory to keep all output")
     pflag.StringVarP(&fileName, "file-name", "f", "subdomains.txt", "File to write subdomains")
 	pflag.Parse()
 
 
-	config, err := utils.LoadConfig(configDir)
+	config, err := utils.LoadConfig(configDir, docFS)
 	if err != nil {
 		log.Fatal("cannot load config:", err)
 	}
