@@ -21,10 +21,8 @@ type Config struct {
 }
 
 func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
-	viper.AddConfigPath(path)
 	viper.SetConfigName("config")
 	viper.SetConfigType("env")
-	
 	viper.AutomaticEnv()
 
 	// Get the user's home directory
