@@ -44,7 +44,7 @@ func main() {
 
 
 	pflag.StringVarP(&domain, "domain", "d", "", "Target domain to enumerate")
-    pflag.StringVarP(&configDir, "config-dir", "c", "embedded", "Path to directory which config file(config.env) exists")
+    pflag.StringVarP(&configDir, "config-dir", "c", "embedded", "Path to directory which config.env exists")
     pflag.StringVarP(&outDir, "out-dir", "o", "$HOME/user/r3conwhal3/results", "Directory to keep all output")
     pflag.StringVarP(&fileName, "file-name", "f", "subdomains.txt", "File to write subdomains")
 	pflag.Parse()
