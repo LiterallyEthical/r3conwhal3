@@ -61,10 +61,11 @@ chmod +x installer.sh
 
 | Flag | Description |
 |:---------|:---------|
-| -domain| Target domain to enumerate |
-| -out-dir | Directory to keep all output (default "$HOME/r3conwhal3/results") |
-| -file-name | File to store gathered subdomains (default "subdomains.txt") | 
-| -help | Show help menu | 
+| -c, --config-dir | Path to directory which config file(config.env) exists |
+| -d, --domain| Target domain to enumerate |
+| -f, --file-name | File to store gathered subdomains (default "subdomains.txt") |
+| -o, --out-dir | Directory to keep all output (default "$HOME/r3conwhal3/results") |
+| -h, --help | Show help menu | 
 
 ## Example Usage
 
@@ -82,7 +83,7 @@ r3conwhal3 <domain-name> [<-dir-name>] [<-file-name>]
 ### Running the full scan 
 
 ```
-r3conwhal3 <domain-name> [<-dir-name>] [<-file-name>] [<-wordlist>]
+r3conwhal3 <domain-name> [<config-dir>] [<-file-name>] [<-out-dir>]
 ```
 <div align="center">
 
