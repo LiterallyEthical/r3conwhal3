@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"bytes"
+	"embed"
 	"fmt"
 	"log"
 	"os"
@@ -18,7 +20,7 @@ type Config struct {
 	Subkill3rWordlist string `mapstructure:"SUBKILL3R_WORDLIST"`	
 }
 
-func LoadConfig(path string) (config Config, err error) {
+func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigName("config")
 	viper.SetConfigType("env")
@@ -41,14 +43,28 @@ func LoadConfig(path string) (config Config, err error) {
 	viper.SetDefault("SUBKILL3R_WORDLIST", "")
 
 
+	if path == "embedded" {
+		// Use the passed embedded FS to read the config file
+		configData, err := docFS.ReadFile("docs/config.env")
+		if err != nil {
+			return config, fmt.Errorf("failed to read embedded config file: %v", err)
+		}
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		return
+		// Use viper's ReadConfig method to read from the byte slice
+		err = viper.ReadConfig(bytes.NewBuffer(configData))
+		if err != nil {
+			return config, fmt.Errorf("failed to read configuration from embedded data: %v", err)
+		}
+	} else {
+		// Load configuration from a file path
+		viper.AddConfigPath(path)
+		err = viper.ReadInConfig()
+		if err != nil {
+			return config, fmt.Errorf("failed to read configuration from path %s: %v", path, err)
+		}
 	}
 
-
+	// Unmarshal the read configuraiton into the Config struct
 	err = viper.Unmarshal(&config)
-
-	return
+	return config, err
 }
