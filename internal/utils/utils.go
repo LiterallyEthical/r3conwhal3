@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bufio"
+	"embed"
 	"fmt"
 	"os"
 	"os/exec"
@@ -216,4 +217,26 @@ func Banner(bannerPath string) {
     fmt.Println(color.CyanString(string(b)))
 }
 
-// Filter live domains
+// ExtractEmbeddedFileToTempDir reads an embedded file and writes it to a temporary directory named ".tmp", returning the path to the newly created temporary file.
+func ExtractEmbeddedFileToTempDir(docFS embed.FS, embeddedFilePath, tempFileName string) (string, error) {
+	tempDir := ".tmp" // Hardcoded temporary directory
+
+	// Ensure the temporary directory exists
+	if err := os.MkdirAll(tempDir, os.ModePerm); err != nil {
+		return "", fmt.Errorf("failed to create temporary directory: %v", err)
+	}
+
+	// Read the embedded file
+	data, err := docFS.ReadFile(embeddedFilePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to read embedded file '%s': %v", embeddedFilePath, err)
+	}
+
+	// Write to a temporary file within the specified temporary directory
+	tmpFilePath := filepath.Join(tempDir, tempFileName)
+	if err := os.WriteFile(tmpFilePath, data, 0644); err != nil {
+		return "", fmt.Errorf("failed to write to temporary file '%s': %v", tmpFilePath, err)
+	}
+
+	return tmpFilePath, nil
+}
