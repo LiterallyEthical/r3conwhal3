@@ -34,11 +34,19 @@ func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
 	
 	// Set the default value for outDir
 	defaultDir := filepath.Join(homeDir, "r3conwhal3", "results")
-	
+
+	// Set the default path for subkill3r wordlist to
+	subkill3r_wordlist, err := ExtractEmbeddedFileToTempDir(docFS, "docs/subdomains-1000.txt", "subdomains-1000.txt")
+	if err != nil {
+		log.Panic(err)
+	}
+
 	// Setting default values
 	viper.SetDefault("OUT_DIR", defaultDir)
 	viper.SetDefault("FILE_NAME", "subdomains.txt")	
-	viper.SetDefault("SUBKILL3R_WORDLIST", "")
+	viper.SetDefault("SUBKILL3R_WORDLIST", subkill3r_wordlist)
+
+
 
 
 	if path == "embedded" {
