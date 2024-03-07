@@ -38,12 +38,11 @@ func main() {
 	fmt.Println(color.CyanString(string(data)))
 
 	// Define flags
-	var domain, fileName, outDir, configDir string
+	var domain, outDir, configDir string
 
 	pflag.StringVarP(&domain, "domain", "d", "", "Target domain to enumerate")
 	pflag.StringVarP(&configDir, "config-dir", "c", "embedded", "Path to directory which config.env exists")
 	pflag.StringVarP(&outDir, "out-dir", "o", "$HOME/user/r3conwhal3/results", "Directory to keep all output")
-	pflag.StringVarP(&fileName, "file-name", "f", "subdomains.txt", "File to write subdomains")
 	pflag.Parse()
 
 	config, err := utils.LoadConfig(configDir, docFS)
@@ -57,13 +56,8 @@ func main() {
 		outDir = viper.GetString("OUT_DIR")
 	}
 
-	if !pflag.Lookup("file-name").Changed {
-		fileName = viper.GetString("FILE_NAME")
-	}
-
 	// Binding variables from config.env to flags
 	viper.BindPFlag("OUT_DIR", pflag.Lookup("out-dir"))
-	viper.BindPFlag("FILE_NAME", pflag.Lookup("file-name"))
 
 	// Define variables for subkill3r
 	workerCount, err := strconv.Atoi(config.Subkill3rWorkerCount)
