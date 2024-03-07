@@ -44,7 +44,7 @@ func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
 	}
 
 	// Set the default path for puredns wordlist
-	puredns_wordlist, err := ExtractEmbeddedFileToTempDir(docFS, "docs/subdomains-top-110k.txt", "subdomains-top-110k.txt")
+	puredns_wordlist, err := ExtractEmbeddedFileToTempDir(docFS, "docs/subdomains-top-20k.txt", "subdomains-top-20k.txt")
 	if err != nil {
 		log.Panic(err)
 	}
