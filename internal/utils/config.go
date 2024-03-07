@@ -13,7 +13,6 @@ import (
 
 type Config struct {
 	OutDir               string `mapstructure:"OUT_DIR"`
-	FileName             string `mapstructure:"FILE_NAME"`
 	Subkill3rWorkerCount string `mapstructure:"SUBKILL3R_WORKER_COUNT"`
 	Subkill3rServerAddr  string `mapstructure:"SUBKILL3R_SERVER_ADDR"`
 	Subkill3rWordlist    string `mapstructure:"SUBKILL3R_WORDLIST"`
@@ -56,7 +55,6 @@ func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
 
 	// Setting default values
 	viper.SetDefault("OUT_DIR", defaultDir)
-	viper.SetDefault("FILE_NAME", "subdomains.txt")
 	viper.SetDefault("SUBKILL3R_WORDLIST", subkill3r_wordlist)
 	viper.SetDefault("PUREDNS_WORDLIST", puredns_wordlist)
 	viper.SetDefault("PUREDNS_RESOLVERS", puredns_resolvers)
