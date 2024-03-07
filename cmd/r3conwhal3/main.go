@@ -74,7 +74,7 @@ func main() {
 
 	// Check if the domain is provided or not
 	if domain == "" {
-		fmt.Println("Usage: go run main.go -domain <domain> [-fileName <fileName>] [-outDir <outDir>]")
+		fmt.Println("Usage: go run main.go -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]")
 		return
 	}
 
