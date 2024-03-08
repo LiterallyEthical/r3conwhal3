@@ -65,12 +65,6 @@ func InitActiveSubdEnum(outDirPath, domain, filePath, wordlist, resolvers string
 		myLogger.Warning("\rError measuring enumerated subdomains: %v ", err)
 	}
 	myLogger.Info("%v unique subdomains gathered\n", subCount)
-
-	// Filter live domains: FATAL
-	if err := RunHTTPX(filePath, outDirPath); err != nil {
-		return fmt.Errorf(color.RedString("%s module failed: error running httpx for %s: %v\n", modName, filePath, err))
-	}
-
 	myLogger.Info(color.CyanString("%s module completed", modName))
 
 	return nil
