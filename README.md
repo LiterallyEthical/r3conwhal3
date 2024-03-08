@@ -63,7 +63,6 @@ chmod +x installer.sh
 |:---------|:---------|
 | -c, --config-dir | Path to directory which config.env exists (default "embedded") |
 | -d, --domain| Target domain to enumerate |
-| -f, --file-name | File to store gathered subdomains (default "subdomains.txt") |
 | -o, --out-dir | Directory to keep all output (default "$HOME/r3conwhal3/results") |
 | -h, --help | Show help menu | 
 
@@ -71,20 +70,15 @@ chmod +x installer.sh
 
 ### Running the scan with default options
 ```
-r3conwhal3 -domain <domain-name>
+r3conwhal3 -d <domain-name>
 ```
 
 ### Running the scan with custom options
 
 ```
-r3conwhal3 <domain-name> [<-dir-name>] [<-file-name>] 
+r3conwhal3  -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]
 ```
 
-### Running the full scan 
-
-```
-r3conwhal3 <domain-name> [<config-dir>] [<-file-name>] [<-out-dir>]
-```
 <div align="center">
 
 | :exclamation:  **Disclaimer**  |
@@ -104,7 +98,22 @@ r3conwhal3 <domain-name> [<config-dir>] [<-file-name>] [<-out-dir>]
 | 2 | [assetfinder](https://github.com/tomnomnom/assetfinder)  | discovering more subdomains
 | 3 | [amass](https://github.com/owasp-amass/amass)  | discovering more subdomains
 | 4 | [subkill3r](https://github.com/LiterallyEthical/r3conwhal3/pkg/subkill3r)  | discovering more subdomains (still under development) 
-| 5 | [httpx](https://github.com/projectdiscovery/httpx/tree/v1.3.7)  | filtering live domains from the gathered subdomains 
+ 
+
+## Active Subdomain Enumeration
+
+| ID | Tool | Role |
+|:---------:|:---------|:---------|
+| 1 | [puredns](https://github.com/d3mondev/puredns)  |  subdomain resolving and bruteforcing
+
+## Web Operations
+
+| ID | Tool | Role |
+|:---------:|:---------|:---------|
+| 1 | [httpx](https://github.com/projectdiscovery/httpx/tree/v1.3.7)  | filtering live domains from the gathered subdomains
+
+
+
 
 # Disclaimer
 
