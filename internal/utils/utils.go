@@ -15,17 +15,9 @@ import (
 	"github.com/fatih/color"
 )
 
-var myLogger logger.Logger
-
-func init() {
-	// Init the logger during package initialization
-	log, err := logger.NewLogger(0, 0, 0)
-	if err != nil {
-		panic(err)
-	}
-
-	myLogger = log
-}
+var (
+	myLogger = logger.GetLogger()
+)
 
 func RunCommand(command string, args ...interface{}) ([]byte, error) {
 

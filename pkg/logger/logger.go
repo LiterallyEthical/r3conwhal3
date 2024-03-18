@@ -9,6 +9,22 @@ import (
 	"github.com/fatih/color"
 )
 
+var myLogger Logger
+
+func init() {
+	// Init the logger during package initialization
+	log, err := NewLogger(0, 0, 0)
+	if err != nil {
+		panic(err)
+	}
+
+	myLogger = log
+
+}
+
+func GetLogger() Logger {
+	return myLogger
+}
 
 type Logger interface {
 	Info(format string, args ...interface{})
@@ -19,11 +35,11 @@ type Logger interface {
 
 // defaultLogger is the default implementation of the Logger interface.
 type defaultLogger struct {
-	infoLogger *log.Logger
+	infoLogger    *log.Logger
 	warningLogger *log.Logger
-	errorLogger *log.Logger
-	debugLogger *log.Logger
-	mu sync.Mutex
+	errorLogger   *log.Logger
+	debugLogger   *log.Logger
+	mu            sync.Mutex
 }
 
 // NewLogger creates a new instance of the defaultLogger with optional configurations.
@@ -52,10 +68,9 @@ func NewLogger(infoFlags, warningFlags, errorFlags int) (Logger, error) {
 		infoLogger:    infoLogger,
 		warningLogger: warningLogger,
 		errorLogger:   errorLogger,
-		debugLogger: debugLogger,
+		debugLogger:   debugLogger,
 	}, nil
 }
-
 
 func (l *defaultLogger) Info(format string, args ...interface{}) {
 	l.mu.Lock()
@@ -85,3 +100,4 @@ func (l *defaultLogger) Debug(format string, args ...interface{}) {
 	message := fmt.Sprintf(format, args...)
 	l.debugLogger.Println(message)
 }
+
