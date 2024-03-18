@@ -19,6 +19,7 @@ import (
 
 var (
 	cmds     = []string{"subfinder", "assetfinder", "amass", "httpx", "puredns"}
+	myLogger = logger.GetLogger()
 	//go:embed docs/*
 	docFS          embed.FS
 	specifiedFiles []string
@@ -86,6 +87,7 @@ func main() {
 	outDirPath, err := utils.CreateDir(outDir, domain)
 	if err != nil {
 		myLogger.Error("Failed to create directory: %v, %v", outDir, err)
+		log.Fatalf("Failed to create directory: %v, %v", outDir, err)
 	}
 	// Join full path for activeSubdEnum
 	activeFileName := "active_enum_subdomains.txt"
