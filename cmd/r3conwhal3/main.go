@@ -19,7 +19,6 @@ import (
 
 var (
 	cmds     = []string{"subfinder", "assetfinder", "amass", "httpx", "puredns"}
-	myLogger logger.Logger
 	//go:embed docs/*
 	docFS          embed.FS
 	specifiedFiles []string
