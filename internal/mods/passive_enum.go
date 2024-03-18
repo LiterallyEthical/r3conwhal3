@@ -14,18 +14,10 @@ import (
 	"github.com/fatih/color"
 )
 
-var myLogger logger.Logger
-var subCount int
-
-func init() {
-	// Init the logger during package initialization
-	log, err := logger.NewLogger(0, 0, 0)
-	if err != nil {
-		panic(err)
-	}
-
-	myLogger = log
-}
+var (
+	subCount int
+	myLogger = logger.GetLogger()
+)
 
 func RunSubfinder(domain, filePath string) error {
 	// fmt.Printf("\n[+]Starting subfinder\n")
