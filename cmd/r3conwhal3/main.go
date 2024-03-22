@@ -39,10 +39,14 @@ func main() {
 
 	// Define flags
 	var domain, outDir, configDir string
+	var enableAllMods, enablePassiveEnum, enableActiveEnum bool
 
 	pflag.StringVarP(&domain, "domain", "d", "", "Target domain to enumerate")
 	pflag.StringVarP(&configDir, "config-dir", "c", "embedded", "Path to directory which config.env exists")
 	pflag.StringVarP(&outDir, "out-dir", "o", "$HOME/user/r3conwhal3/results", "Directory to keep all output")
+	pflag.BoolVarP(&enablePassiveEnum, "passive", "p", false, "Perform passsive subdomain enumeration process")
+	pflag.BoolVarP(&enableActiveEnum, "active", "a", false, "Perform active recon processs (DNS bruteforce & DNS permutation)")
+	pflag.BoolVarP(&enableAllMods, "all", "A", true, "Perform all passive & active recon process")
 	pflag.Parse()
 
 	config, err := utils.LoadConfig(configDir, docFS)
@@ -114,12 +118,18 @@ func main() {
 		SpecifiedFiles: specifiedFiles,
 	}
 
-	if err := mods.InitSubdEnum(domain, passiveFilePath, outDirPath, wordlist, serverAddr, workerCount); err != nil {
-		log.Fatal(err)
+	// Run passive enumeration if enabled or no flags are provided (default behavior)
+	if enablePassiveEnum || (!enableActiveEnum && !enablePassiveEnum) {
+		if err := mods.InitSubdEnum(domain, passiveFilePath, outDirPath, wordlist, serverAddr, workerCount); err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	if err := mods.InitActiveSubdEnum(activeEnumCFG); err != nil {
-		log.Fatal(err)
+	// Run active enumeration if enabled or no flags are provided (default behavior)
+	if enableActiveEnum || (!enableActiveEnum && !enablePassiveEnum) {
+		if err := mods.InitActiveSubdEnum(activeEnumCFG); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	if err := mods.InitFilterLiveDomains(outDirPath); err != nil {
