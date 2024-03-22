@@ -19,6 +19,13 @@ type Config struct {
 	PurednsWordlist      string `mapstructure:"PUREDNS_WORDLIST"`
 	PurednsResolvers     string `mapstructure:"PUREDNS_RESOLVERS"`
 	PurednsNumOfThreads  int    `mapstructure:"PUREDNS_NUM_OF_THREADS"`
+	GotatorPermlist      string `mapstructure:"GOTATOR_PERMLIST"`
+	GotatorDepth         int    `mapstructure:"GOTATOR_DEPTH"`
+	GotatorNumbers       int    `mapstructure:"GOTATOR_NUMBERS"`
+	GotatorNumOfThreads  int    `mapstructure:"GOTATOR_NUM_OF_THREADS"`
+	GotatorMindup        bool   `mapstructure:"GOTATOR_MINDUP"`
+	GotatorAdv           bool   `mapstructure:"GOTATOR_ADV"`
+	GotatorMd            bool   `mapstructure:"GOTATOR_MD"`
 }
 
 func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
@@ -48,16 +55,41 @@ func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
 		log.Panic(err)
 	}
 
+	// Set the default resolvers for puredns
 	puredns_resolvers, err := ExtractEmbeddedFileToTempDir(docFS, "docs/resolvers.txt", "resolvers.txt")
 	if err != nil {
 		log.Panic(err)
 	}
 
+	// Set the default permutation list for gotator
+	gotator_permlist, err := ExtractEmbeddedFileToTempDir(docFS, "docs/permlist.txt", "permlist.txt")
+	if err != nil {
+		log.Panic(err)
+	}
+
 	// Setting default values
+
+	// main configs
 	viper.SetDefault("OUT_DIR", defaultDir)
+
+	// subkill3r configs
 	viper.SetDefault("SUBKILL3R_WORDLIST", subkill3r_wordlist)
+	viper.SetDefault("SUBKILL3R_WORKER_COUNT", 1000)
+	viper.SetDefault("SUBKILL3R_SERVER_ADDR", "8.8.8.8:53")
+
+	// puredns configs
 	viper.SetDefault("PUREDNS_WORDLIST", puredns_wordlist)
 	viper.SetDefault("PUREDNS_RESOLVERS", puredns_resolvers)
+	viper.SetDefault("PUREDNS_NUM_OF_THREADS", 100)
+
+	// gotator configs
+	viper.SetDefault("GOTATOR_PERMLIST", gotator_permlist)
+	viper.SetDefault("GOTATOR_DEPTH", 1)
+	viper.SetDefault("GOTATOR_NUMBERS", 3)
+	viper.SetDefault("GOTATOR_NUM_OF_THREADS", 100)
+	viper.SetDefault("GOTATOR_MINDUP", false)
+	viper.SetDefault("GOTATOR_ADV", false)
+	viper.SetDefault("GOTATOR_MD", false)
 
 	if path == "embedded" {
 		// Use the passed embedded FS to read the config file
