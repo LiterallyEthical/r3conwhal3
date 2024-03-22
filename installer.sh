@@ -20,6 +20,7 @@ declare -A tools=(
     ["amass"]="github.com/owasp-amass/amass/v4/...@master"
     ["httpx"]="github.com/projectdiscovery/httpx/cmd/httpx@latest"
     ["puredns"]="github.com/d3mondev/puredns/v2@latest"
+    ["gotator"]="github.com/Josue87/gotator@latest"
 )
 
 # Function to check if a tool is installed
