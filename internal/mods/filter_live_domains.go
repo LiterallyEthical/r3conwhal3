@@ -44,10 +44,11 @@ func RunHTTPX(filePath, outDirPath string) error {
 	return nil
 }
 
-func InitFilterLiveDomains(outDirPath string, specifiedFiles []string) error {
+func InitFilterLiveDomains(outDirPath string) error {
 	modName := "FILTER_LIVE_DOMAINS"
-	outFileName := "all_subdomains.txt"
+	outFileName := "ultimate_subdomains.txt"
 	outFilePath := filepath.Join(outDirPath, outFileName)
+	specifiedFiles := []string{"all_subdomains.txt", "resolved_subs.txt"}
 
 	myLogger.Info(color.CyanString("%s module initialized", modName))
 
@@ -75,7 +76,7 @@ func InitFilterLiveDomains(outDirPath string, specifiedFiles []string) error {
 	if err != nil {
 		myLogger.Warning("\rError measuring enumerated subdomains: %v ", err)
 	}
-	myLogger.Info("%v unique subdomains gathered\n", subCount)
+	myLogger.Info("%v total unique subdomains gathered\n", subCount)
 
 	// Filter live subdomains
 	if err := RunHTTPX(outFilePath, outDirPath); err != nil {

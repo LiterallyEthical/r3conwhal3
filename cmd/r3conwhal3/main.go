@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	cmds     = []string{"subfinder", "assetfinder", "amass", "httpx", "puredns"}
+	cmds     = []string{"subfinder", "assetfinder", "amass", "httpx", "massdns", "puredns", "gotator"}
 	myLogger = logger.GetLogger()
 	//go:embed docs/*
 	docFS          embed.FS
@@ -67,11 +67,6 @@ func main() {
 	serverAddr := config.Subkill3rServerAddr
 	wordlist := config.Subkill3rWordlist
 
-	// Define variables for puredns
-	purednsWordlist := config.PurednsWordlist
-	purednsResolvers := config.PurednsResolvers
-	purednsNumOfThreads := config.PurednsNumOfThreads
-
 	// Check if the domain is provided or not
 	if domain == "" {
 		fmt.Println("Usage: go run main.go -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]")
@@ -86,25 +81,48 @@ func main() {
 	// Create directory to keep all output
 	outDirPath, err := utils.CreateDir(outDir, domain)
 	if err != nil {
-		myLogger.Error("Failed to create directory: %v, %v", outDir, err)
 		log.Fatalf("Failed to create directory: %v, %v", outDir, err)
 	}
-	// Join full path for activeSubdEnum
+
+	// Set filename and filepath for configs
 	activeFileName := "active_enum_subdomains.txt"
-	activeFilePath := path.Join(outDirPath, activeFileName)
+	//activeFilePath := path.Join(outDirPath, activeFileName)
 	passiveFileName := "passive_enum_subdomains.txt"
 	passiveFilePath := path.Join(outDirPath, passiveFileName)
 	specifiedFiles = append(specifiedFiles, passiveFileName, activeFileName)
+	sublist := path.Join(outDirPath, "all_subdomains.txt")
+
+	// Set configs for ACTIVE_ENUM
+	activeEnumCFG := mods.ActiveEnum{
+		PureDNS: mods.PureDNS{
+			Domain:       domain,
+			Wordlist:     config.PurednsWordlist,
+			Resolvers:    config.PurednsResolvers,
+			NumOfThreads: config.PurednsNumOfThreads,
+		},
+		Gotator: mods.Gotator{
+			Sublist:      sublist,
+			Permlist:     config.GotatorPermlist,
+			Depth:        config.GotatorDepth,
+			Numbers:      config.GotatorNumbers,
+			NumOfThreads: config.GotatorNumOfThreads,
+			Mindup:       config.GotatorMindup,
+			Adv:          config.GotatorAdv,
+			Md:           config.GotatorMd,
+		},
+		OutDirPath:     outDirPath,
+		SpecifiedFiles: specifiedFiles,
+	}
 
 	if err := mods.InitSubdEnum(domain, passiveFilePath, outDirPath, wordlist, serverAddr, workerCount); err != nil {
 		log.Fatal(err)
 	}
 
-	if err := mods.InitActiveSubdEnum(outDirPath, domain, activeFilePath, purednsWordlist, purednsResolvers, purednsNumOfThreads); err != nil {
+	if err := mods.InitActiveSubdEnum(activeEnumCFG); err != nil {
 		log.Fatal(err)
 	}
 
-	if err := mods.InitFilterLiveDomains(outDirPath, specifiedFiles); err != nil {
+	if err := mods.InitFilterLiveDomains(outDirPath); err != nil {
 		log.Fatal(err)
 	}
 }
