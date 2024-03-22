@@ -80,12 +80,11 @@ func LogElapsedTime(startTime time.Time, operation string) {
 }
 
 func CheckInstallations(tools []string) error {
-	// fmt.Printf("[+]Start checking required tools\n")
 	myLogger.Info(color.CyanString("Checking required tools\n"))
 
 	ShowProgress()
 
-	//versionRegex := regexp.MustCompile(`(\d+\.\d+\.\d+)`)
+	defer fmt.Println()
 
 	for _, tool := range tools {
 		cmd := exec.Command("which", tool)
