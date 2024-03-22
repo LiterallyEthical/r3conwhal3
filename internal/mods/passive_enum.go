@@ -43,7 +43,7 @@ func RunSubfinder(domain, filePath string) error {
 		myLogger.Warning("Failed to measure number of gathered subdomains: %v", err)
 	}
 	// fmt.Printf("\r[+]%v subdomains gathered", countedLines)
-	myLogger.Info("%v new subdomain found!", subCount)
+	myLogger.Info("%v subdomain found!", subCount)
 
 	// Log process completion and elapsed time
 	// fmt.Printf("\n[+]Subfinder executed successfully")
@@ -238,7 +238,7 @@ func InitSubdEnum(domain, filePath, dirPath, wordlist, serverAddr string, worker
 	}
 	myLogger.Info("%v unique subdomains gathered\n", subCount)
 
-	myLogger.Info(color.CyanString("%s module completed", modName))
+	myLogger.Info(color.CyanString("%s module completed\n", modName))
 
 	return nil
 }
