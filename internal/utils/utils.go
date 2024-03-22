@@ -255,7 +255,7 @@ func MergeFiles(pathToDir, outFileName string, specificFiles []string) error {
 		if _, err := os.Stat(filePath); err != nil {
 			if os.IsNotExist(err) {
 				// The file does not exist, so it needs to be handled
-				myLogger.Warning("File does not exist: %s\n", filePath)
+				myLogger.Warning("File does not exist: %s", filePath)
 				continue // Skip this file
 			} else {
 				return err
