@@ -59,4 +59,8 @@ go.work
 # tmp dir for dev
 .tmp/*
 
+# local config file
+config.env
+
+
 # End of https://www.toptal.com/developers/gitignore/api/go,visualstudiocode,linux
