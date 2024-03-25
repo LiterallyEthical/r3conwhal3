@@ -12,20 +12,22 @@ import (
 )
 
 type Config struct {
-	OutDir               string `mapstructure:"OUT_DIR"`
-	Subkill3rWorkerCount string `mapstructure:"SUBKILL3R_WORKER_COUNT"`
-	Subkill3rServerAddr  string `mapstructure:"SUBKILL3R_SERVER_ADDR"`
-	Subkill3rWordlist    string `mapstructure:"SUBKILL3R_WORDLIST"`
-	PurednsWordlist      string `mapstructure:"PUREDNS_WORDLIST"`
-	PurednsResolvers     string `mapstructure:"PUREDNS_RESOLVERS"`
-	PurednsNumOfThreads  int    `mapstructure:"PUREDNS_NUM_OF_THREADS"`
-	GotatorPermlist      string `mapstructure:"GOTATOR_PERMLIST"`
-	GotatorDepth         int    `mapstructure:"GOTATOR_DEPTH"`
-	GotatorNumbers       int    `mapstructure:"GOTATOR_NUMBERS"`
-	GotatorNumOfThreads  int    `mapstructure:"GOTATOR_NUM_OF_THREADS"`
-	GotatorMindup        bool   `mapstructure:"GOTATOR_MINDUP"`
-	GotatorAdv           bool   `mapstructure:"GOTATOR_ADV"`
-	GotatorMd            bool   `mapstructure:"GOTATOR_MD"`
+	OutDir                string `mapstructure:"OUT_DIR"`
+	Subkill3rWorkerCount  int    `mapstructure:"SUBKILL3R_WORKER_COUNT"`
+	Subkill3rServerAddr   string `mapstructure:"SUBKILL3R_SERVER_ADDR"`
+	Subkill3rWordlist     string `mapstructure:"SUBKILL3R_WORDLIST"`
+	PurednsWordlist       string `mapstructure:"PUREDNS_WORDLIST"`
+	PurednsResolvers      string `mapstructure:"PUREDNS_RESOLVERS"`
+	PurednsNumOfThreads   int    `mapstructure:"PUREDNS_NUM_OF_THREADS"`
+	GotatorPermlist       string `mapstructure:"GOTATOR_PERMLIST"`
+	GotatorDepth          int    `mapstructure:"GOTATOR_DEPTH"`
+	GotatorNumbers        int    `mapstructure:"GOTATOR_NUMBERS"`
+	GotatorNumOfThreads   int    `mapstructure:"GOTATOR_NUM_OF_THREADS"`
+	GotatorMindup         bool   `mapstructure:"GOTATOR_MINDUP"`
+	GotatorAdv            bool   `mapstructure:"GOTATOR_ADV"`
+	GotatorMd             bool   `mapstructure:"GOTATOR_MD"`
+	SubfinderNumOfThreads int    `mapstructure:"SUBFINDER_NUM_OF_THREADS"`
+	AmassTimeout          int    `mapstructure:"AMASS_TIMEOUT"`
 }
 
 func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
@@ -72,10 +74,20 @@ func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
 	// main configs
 	viper.SetDefault("OUT_DIR", defaultDir)
 
+	// PASSIVE_ENUM configs
+
+	// subfinder configs
+	viper.SetDefault("SUBFINDER_NUM_OF_THREADS", 100)
+
+	// amass configs
+	viper.SetDefault("AMASS_TIMEOUT", 1)
+
 	// subkill3r configs
 	viper.SetDefault("SUBKILL3R_WORDLIST", subkill3r_wordlist)
 	viper.SetDefault("SUBKILL3R_WORKER_COUNT", 1000)
 	viper.SetDefault("SUBKILL3R_SERVER_ADDR", "8.8.8.8:53")
+
+	// ACTIVE_ENUM configs
 
 	// puredns configs
 	viper.SetDefault("PUREDNS_WORDLIST", puredns_wordlist)
