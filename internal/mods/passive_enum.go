@@ -19,7 +19,30 @@ var (
 	myLogger = logger.GetLogger()
 )
 
-func RunSubfinder(domain, filePath string) error {
+type PassiveEnum struct {
+	Domain     string
+	FilePath   string
+	OutDirPath string
+	Subfinder  Subfinder
+	Amass      Amass
+	Subkill3r  Subkill3r
+}
+
+type Subfinder struct {
+	NumOfThreads int
+}
+
+type Amass struct {
+	Timeout int
+}
+
+type Subkill3r struct {
+	Wordlist    string
+	ServerAddr  string
+	WorkerCount int
+}
+
+func RunSubfinder(domain, filePath string, numOfThreads int) error {
 	// fmt.Printf("\n[+]Starting subfinder\n")
 	myLogger.Info("Running subfinder")
 
@@ -31,7 +54,7 @@ func RunSubfinder(domain, filePath string) error {
 	utils.ShowProgress()
 
 	// Run subfinder
-	_, err := utils.RunCommand("subfinder", "-d", domain, "-o", filePath)
+	_, err := utils.RunCommand("subfinder", "-d", domain, "-o", filePath, "-t", numOfThreads)
 	if err != nil {
 		return err
 	}
@@ -91,7 +114,7 @@ func RunAssetfinder(domain, filePath string) error {
 	return nil
 }
 
-func RunAmass(domain, filePath string) error {
+func RunAmass(domain, filePath string, timeout int) error {
 	myLogger.Info("Running amass")
 
 	// printing the execution time
@@ -102,7 +125,7 @@ func RunAmass(domain, filePath string) error {
 	utils.ShowProgress()
 
 	// Run amass
-	output, err := utils.RunCommand("amass", "enum", "-passive", "-timeout", "1", "-d", domain)
+	output, err := utils.RunCommand("amass", "enum", "-passive", "-timeout", timeout, "-d", domain)
 	if err != nil {
 		return err
 	}
@@ -192,26 +215,26 @@ func RunSubkill3r(domain, filePath, wordlist, serverAddr string, workerCount int
 	return nil
 }
 
-func InitSubdEnum(domain, filePath, dirPath, wordlist, serverAddr string, workerCount int) error {
+func InitSubdEnum(cfg PassiveEnum) error {
 	modName := "PASSIVE_ENUM"
 	myLogger.Info(color.CyanString("%s module initialized\n", modName))
 
 	// FATAL inital foothold for subd enum (can be altered later)
-	if err := RunSubfinder(domain, filePath); err != nil {
-		return fmt.Errorf(color.RedString("Error running subfinder for domain %s: %v\n", domain, err))
+	if err := RunSubfinder(cfg.Domain, cfg.FilePath, cfg.Subfinder.NumOfThreads); err != nil {
+		return fmt.Errorf(color.RedString("Error running subfinder for domain %s: %v\n", cfg.Domain, err))
 	}
 
-	if err := RunAssetfinder(domain, filePath); err != nil {
-		myLogger.Error("Error running assetfinder for domain %s: %v\n", domain, err)
+	if err := RunAssetfinder(cfg.Domain, cfg.FilePath); err != nil {
+		myLogger.Error("Error running assetfinder for domain %s: %v\n", cfg.Domain, err)
 	}
 
-	if err := RunAmass(domain, filePath); err != nil {
-		myLogger.Error("Error running amass for domain %s: %v\n", domain, err)
+	if err := RunAmass(cfg.Domain, cfg.FilePath, cfg.Amass.Timeout); err != nil {
+		myLogger.Error("Error running amass for cfg.Domain %s: %v\n", cfg.Domain, err)
 	}
 
-	if wordlist != "none" {
-		if err := RunSubkill3r(domain, filePath, wordlist, serverAddr, workerCount); err != nil {
-			myLogger.Error("Error running subkill3r for domain %s: %v", domain, err)
+	if cfg.Subkill3r.Wordlist != "none" {
+		if err := RunSubkill3r(cfg.Domain, cfg.FilePath, cfg.Subkill3r.Wordlist, cfg.Subkill3r.ServerAddr, cfg.Subkill3r.WorkerCount); err != nil {
+			myLogger.Error("Error running subkill3r for cfg.Domain %s: %v", cfg.Domain, err)
 			myLogger.Warning("Look for SUBKILL3R_WORDLIST in config file to specify a wordlist\n")
 		}
 	} else {
@@ -219,20 +242,20 @@ func InitSubdEnum(domain, filePath, dirPath, wordlist, serverAddr string, worker
 	}
 
 	// Count total enumerated subdomains
-	subCount, err := utils.CountLines(filePath)
+	subCount, err := utils.CountLines(cfg.FilePath)
 	if err != nil {
 		myLogger.Error("\rError measuring enumerated subdomains: %v ", err)
 	}
 	myLogger.Info("%v total subdomains gathered", subCount)
 
 	// Removing duplicates: FATAL
-	if err := utils.RemoveDuplicatesFromFile(filePath); err != nil {
-		return fmt.Errorf(color.RedString("%s module failed: error removing duplicates from the file %s: %v ", modName, filePath, err))
+	if err := utils.RemoveDuplicatesFromFile(cfg.FilePath); err != nil {
+		return fmt.Errorf(color.RedString("%s module failed: error removing duplicates from the file %s: %v ", modName, cfg.FilePath, err))
 	}
-	myLogger.Info("Removing duplicates from %s", filePath)
+	myLogger.Info("Removing duplicates from %s", cfg.FilePath)
 
 	// Count unique subdomains
-	subCount, err = utils.CountLines(filePath)
+	subCount, err = utils.CountLines(cfg.FilePath)
 	if err != nil {
 		myLogger.Warning("\rError measuring enumerated subdomains: %v ", err)
 	}
