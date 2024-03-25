@@ -2,6 +2,7 @@ package mods
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -26,12 +27,6 @@ func RunHTTPX(filePath, outDirPath string) error {
 		return err
 	}
 
-	// //Write output to specified file
-	// err = appendToFile(liveSubdomains, output)
-	// if err != nil {
-	// 	return fmt.Errorf("Error appending to file %s: %v", filePath, err)
-	// }
-
 	subCount, err := utils.CountLines(liveSubdomains)
 	if err != nil {
 		myLogger.Warning("Failed to measure live subdomains: %v", err)
@@ -45,6 +40,20 @@ func RunHTTPX(filePath, outDirPath string) error {
 }
 
 func InitFilterLiveDomains(outDirPath string) error {
+
+	// Check if the ACTIVE_SUBD_ENUM is run
+	if _, err := os.Stat("all_subdomains.txt"); err != nil {
+		if os.IsNotExist(err) {
+			outFileName := "all_subdomains.txt"
+			specifiedFiles := []string{"active_enum_subdomains.txt", "passive_enum_subdomains.txt"}
+
+			// Merge all subdomain files previously gathered
+			if err := RunMergeFiles(outDirPath, outFileName, specifiedFiles); err != nil {
+				return fmt.Errorf(color.RedString("Error running merge files to %v", outDirPath))
+			}
+		}
+	}
+
 	modName := "FILTER_LIVE_DOMAINS"
 	outFileName := "ultimate_subdomains.txt"
 	outFilePath := filepath.Join(outDirPath, outFileName)
