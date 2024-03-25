@@ -156,9 +156,8 @@ func RunGotator(sublist, permlist string, depth, numbers, numOfThreads int, mind
 	return nil
 }
 
-func RunMergeFiles(outDirPath string, specifiedFiles []string) error {
+func RunMergeFiles(outDirPath, outFileName string, specifiedFiles []string) error {
 	myLogger.Info("Starting to merge all subdomains previously gathered")
-	outFileName := "all_subdomains.txt"
 	outFilePath := filepath.Join(outDirPath, outFileName)
 
 	// Merge all gathered subdomain files to a single file
@@ -202,7 +201,7 @@ func InitActiveSubdEnum(cfg ActiveEnum) error {
 
 	// Merge all subdomain files previously gathered
 	myLogger.Info(color.RedString("MERGE_FILES is activated"))
-	if err := RunMergeFiles(cfg.OutDirPath, cfg.SpecifiedFiles); err != nil {
+	if err := RunMergeFiles(cfg.OutDirPath, "all_subdomains.txt", cfg.SpecifiedFiles); err != nil {
 		return fmt.Errorf(color.RedString("Error running merge files to %v", cfg.OutDirPath))
 	}
 
