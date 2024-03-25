@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"path"
-	"strconv"
 
 	"github.com/LiterallyEthical/r3conwhal3/internal/mods"
 	"github.com/LiterallyEthical/r3conwhal3/internal/utils"
@@ -63,13 +62,15 @@ func main() {
 	// Binding variables from config.env to flags
 	viper.BindPFlag("OUT_DIR", pflag.Lookup("out-dir"))
 
-	// Define variables for subkill3r
-	workerCount, err := strconv.Atoi(config.Subkill3rWorkerCount)
-	if err != nil {
-		myLogger.Error("error running subkill3r: workerCount is type string instead of int", err)
-	}
-	serverAddr := config.Subkill3rServerAddr
-	wordlist := config.Subkill3rWordlist
+	/*
+		// Define variables for subkill3r
+		workerCount, err := strconv.Atoi(config.Subkill3rWorkerCount)
+		if err != nil {
+			myLogger.Error("error running subkill3r: workerCount is type string instead of int", err)
+		}
+		serverAddr := config.Subkill3rServerAddr
+		wordlist := config.Subkill3rWordlist
+	*/
 
 	// Check if the domain is provided or not
 	if domain == "" {
@@ -96,6 +97,24 @@ func main() {
 	specifiedFiles = append(specifiedFiles, passiveFileName, activeFileName)
 	sublist := path.Join(outDirPath, "all_subdomains.txt")
 
+	// Set configs for PASSIVE_ENUM
+	passiveEnumCFG := mods.PassiveEnum{
+		Domain:     domain,
+		FilePath:   passiveFilePath,
+		OutDirPath: outDirPath,
+		Subfinder: mods.Subfinder{
+			NumOfThreads: config.SubfinderNumOfThreads,
+		},
+		Amass: mods.Amass{
+			Timeout: config.AmassTimeout,
+		},
+		Subkill3r: mods.Subkill3r{
+			Wordlist:    config.Subkill3rWordlist,
+			ServerAddr:  config.Subkill3rServerAddr,
+			WorkerCount: config.Subkill3rWorkerCount,
+		},
+	}
+
 	// Set configs for ACTIVE_ENUM
 	activeEnumCFG := mods.ActiveEnum{
 		PureDNS: mods.PureDNS{
@@ -120,7 +139,7 @@ func main() {
 
 	// Run passive enumeration if enabled or no flags are provided (default behavior)
 	if enablePassiveEnum || (!enableActiveEnum && !enablePassiveEnum) {
-		if err := mods.InitSubdEnum(domain, passiveFilePath, outDirPath, wordlist, serverAddr, workerCount); err != nil {
+		if err := mods.InitSubdEnum(passiveEnumCFG); err != nil {
 			log.Fatal(err)
 		}
 	}
