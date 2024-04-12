@@ -26,6 +26,8 @@ var (
 
 func main() {
 
+	defer utils.CleanUp()
+
 	// Accessing files from the embedded docs directory
 	data, err := fs.ReadFile(docFS, "docs/banner.txt")
 	if err != nil {
