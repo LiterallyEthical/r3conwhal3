@@ -283,3 +283,12 @@ func MergeFiles(pathToDir, outFileName string, specificFiles []string) error {
 
 	return nil
 }
+
+// Clean unnecessary resources such as tmp files
+func CleanUp() {
+	// Delete tmp dir and all its contents
+	tmpDir := ".tmp"
+	if err := os.RemoveAll(tmpDir); err != nil {
+		myLogger.Error("Error deleting tmp directory: %v\n", err)
+	}
+}
