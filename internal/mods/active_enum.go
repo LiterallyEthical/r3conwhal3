@@ -191,7 +191,7 @@ func RunMergeFiles(outDirPath, outFileName string, specifiedFiles []string) erro
 
 func InitActiveSubdEnum(cfg ActiveEnum) error {
 	modName := "ACTIVE_ENUM"
-	myLogger.Info(color.CyanString("%s module initialized\n", modName))
+	myLogger.Info(color.RedString("%s module initialized\n", modName))
 
 	// FATAL inital foothold for this module(can be altered later)
 	myLogger.Info(color.RedString("DNS_BRUTEFORCE is activated"))
@@ -217,7 +217,7 @@ func InitActiveSubdEnum(cfg ActiveEnum) error {
 		return fmt.Errorf(color.RedString("Error running puredns for domain %s: %v\n", cfg.PureDNS.Domain, err))
 	}
 
-	myLogger.Info(color.CyanString("%s module completed\n", modName))
+	myLogger.Info(color.RedString("%s module completed\n", modName))
 
 	return nil
 }
