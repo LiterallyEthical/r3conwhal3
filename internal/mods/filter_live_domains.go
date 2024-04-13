@@ -40,6 +40,8 @@ func RunHTTPX(filePath, outDirPath string) error {
 }
 
 func InitFilterLiveDomains(outDirPath string) error {
+	modName := "FILTER_LIVE_DOMAINS"
+	myLogger.Info(color.BlueString("%s module initialized", modName))
 
 	// Check if the ACTIVE_SUBD_ENUM is run
 	if _, err := os.Stat("all_subdomains.txt"); err != nil {
@@ -54,12 +56,9 @@ func InitFilterLiveDomains(outDirPath string) error {
 		}
 	}
 
-	modName := "FILTER_LIVE_DOMAINS"
 	outFileName := "ultimate_subdomains.txt"
 	outFilePath := filepath.Join(outDirPath, outFileName)
 	specifiedFiles := []string{"all_subdomains.txt", "resolved_subs.txt"}
-
-	myLogger.Info(color.CyanString("%s module initialized", modName))
 
 	// Merge all gathered subdomain files to a single file
 	if err := utils.MergeFiles(outDirPath, outFileName, specifiedFiles); err != nil {
@@ -92,7 +91,7 @@ func InitFilterLiveDomains(outDirPath string) error {
 		return fmt.Errorf(color.RedString("%s module failed: error running httpx for %s: %v\n", modName, outFilePath, err))
 	}
 
-	myLogger.Info(color.CyanString("FILTER_LIVE_DOMAINS module completed"))
+	myLogger.Info(color.BlueString("FILTER_LIVE_DOMAINS module completed\n"))
 
 	return nil
 }
