@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	cmds     = []string{"subfinder", "assetfinder", "amass", "httpx", "massdns", "puredns", "gotator"}
+	cmds     = []string{"subfinder", "assetfinder", "amass", "httpx", "massdns", "puredns", "gotator", "gowitness"}
 	myLogger = logger.GetLogger()
 	//go:embed docs/*
 	docFS          embed.FS
@@ -63,16 +63,6 @@ func main() {
 
 	// Binding variables from config.env to flags
 	viper.BindPFlag("OUT_DIR", pflag.Lookup("out-dir"))
-
-	/*
-		// Define variables for subkill3r
-		workerCount, err := strconv.Atoi(config.Subkill3rWorkerCount)
-		if err != nil {
-			myLogger.Error("error running subkill3r: workerCount is type string instead of int", err)
-		}
-		serverAddr := config.Subkill3rServerAddr
-		wordlist := config.Subkill3rWordlist
-	*/
 
 	// Check if the domain is provided or not
 	if domain == "" {
@@ -139,6 +129,18 @@ func main() {
 		SpecifiedFiles: specifiedFiles,
 	}
 
+	// Set configs for WEB_OPS
+	webopsCFG := mods.WebOps{
+		OutDirPath: outDirPath,
+		Gowitness: mods.Gowitness{
+			Timeout:      config.GowitnessTimeout,
+			ResolutionX:  config.GowitnessResolutionX,
+			ResolutionY:  config.GowitnessResolutionY,
+			NumOfThreads: config.GowitnessNumOfThreads,
+			Fullpage:     config.GowitnessFullpage,
+		},
+	}
+
 	// Run passive enumeration if enabled or no flags are provided (default behavior)
 	if enablePassiveEnum || (!enableActiveEnum && !enablePassiveEnum) {
 		if err := mods.InitSubdEnum(passiveEnumCFG); err != nil {
@@ -156,4 +158,9 @@ func main() {
 	if err := mods.InitFilterLiveDomains(outDirPath); err != nil {
 		log.Fatal(err)
 	}
+
+	if err := mods.InitWebOps(webopsCFG); err != nil {
+		log.Fatal(err)
+	}
+
 }
