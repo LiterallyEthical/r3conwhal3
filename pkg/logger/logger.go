@@ -49,17 +49,17 @@ func NewLogger(infoFlags, warningFlags, errorFlags int) (Logger, error) {
 		return nil, fmt.Errorf("failed to create info logger")
 	}
 
-	warningLogger := log.New(os.Stdout, color.YellowString("[WARN] "), warningFlags)
+	warningLogger := log.New(os.Stdout, color.YellowString("[WRN] "), warningFlags)
 	if warningLogger == nil {
 		return nil, fmt.Errorf("failed to create warning logger")
 	}
 
-	errorLogger := log.New(os.Stdout, color.RedString("[ERROR] "), errorFlags)
+	errorLogger := log.New(os.Stdout, color.RedString("[ERR] "), errorFlags)
 	if errorLogger == nil {
 		return nil, fmt.Errorf("failed to create error logger")
 	}
 
-	debugLogger := log.New(os.Stdout, color.CyanString("[DEBUG] "), log.Ldate|log.Ltime|log.Lshortfile)
+	debugLogger := log.New(os.Stdout, color.CyanString("[DBG] "), log.Ldate|log.Ltime|log.Lshortfile)
 	if debugLogger == nil {
 		return nil, fmt.Errorf("failed to create debug logger")
 	}
@@ -100,4 +100,3 @@ func (l *defaultLogger) Debug(format string, args ...interface{}) {
 	message := fmt.Sprintf(format, args...)
 	l.debugLogger.Println(message)
 }
-
