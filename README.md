@@ -117,6 +117,8 @@ r3conwhal3  -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]
 | ID  | Tool                                                           | Role                                                |
 | :-: | :------------------------------------------------------------- | :-------------------------------------------------- |
 |  1  | [httpx](https://github.com/projectdiscovery/httpx/tree/v1.3.7) | filtering live domains from the gathered subdomains |
+|  2  | [gowitness](https://github.com/sensepost/gowitness) | taking screenshots of filtered live domains
+
 
 # Disclaimer
 
