@@ -28,6 +28,11 @@ type Config struct {
 	GotatorMd             bool   `mapstructure:"GOTATOR_MD"`
 	SubfinderNumOfThreads int    `mapstructure:"SUBFINDER_NUM_OF_THREADS"`
 	AmassTimeout          int    `mapstructure:"AMASS_TIMEOUT"`
+	GowitnessTimeout      int    `mapstructure:"GOWITNESS_TIMEOUT"`
+	GowitnessResolutionX  int    `mapstructure:"GOWITNESS_RESOLUTION_X"`
+	GowitnessResolutionY  int    `mapstructure:"GOWITNESS_RESOLUTION_Y"`
+	GowitnessNumOfThreads int    `mapstructure:"GOWITNESS_NUM_OF_THREADS"`
+	GowitnessFullpage     bool   `mapstructure:"GOWITNESS_FULLPAGE"`
 }
 
 func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
@@ -102,6 +107,15 @@ func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
 	viper.SetDefault("GOTATOR_MINDUP", false)
 	viper.SetDefault("GOTATOR_ADV", false)
 	viper.SetDefault("GOTATOR_MD", false)
+
+	// WEB_OPS configs
+
+	// gowitness configs
+	viper.SetDefault("GOWITNESS_TIMEOUT", 10)
+	viper.SetDefault("GOWITNESS_RESOLUTION_X", 1440)
+	viper.SetDefault("GOWITNESS_RESOLUTION_Y", 900)
+	viper.SetDefault("GOWITNESS_NUM_OF_THREADS", 4)
+	viper.SetDefault("GOWITNESS_FULLPAGE", false)
 
 	if path == "embedded" {
 		// Use the passed embedded FS to read the config file
