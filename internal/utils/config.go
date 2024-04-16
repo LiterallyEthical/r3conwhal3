@@ -12,27 +12,29 @@ import (
 )
 
 type Config struct {
-	OutDir                string `mapstructure:"OUT_DIR"`
-	Subkill3rWorkerCount  int    `mapstructure:"SUBKILL3R_WORKER_COUNT"`
-	Subkill3rServerAddr   string `mapstructure:"SUBKILL3R_SERVER_ADDR"`
-	Subkill3rWordlist     string `mapstructure:"SUBKILL3R_WORDLIST"`
-	PurednsWordlist       string `mapstructure:"PUREDNS_WORDLIST"`
-	PurednsResolvers      string `mapstructure:"PUREDNS_RESOLVERS"`
-	PurednsNumOfThreads   int    `mapstructure:"PUREDNS_NUM_OF_THREADS"`
-	GotatorPermlist       string `mapstructure:"GOTATOR_PERMLIST"`
-	GotatorDepth          int    `mapstructure:"GOTATOR_DEPTH"`
-	GotatorNumbers        int    `mapstructure:"GOTATOR_NUMBERS"`
-	GotatorNumOfThreads   int    `mapstructure:"GOTATOR_NUM_OF_THREADS"`
-	GotatorMindup         bool   `mapstructure:"GOTATOR_MINDUP"`
-	GotatorAdv            bool   `mapstructure:"GOTATOR_ADV"`
-	GotatorMd             bool   `mapstructure:"GOTATOR_MD"`
-	SubfinderNumOfThreads int    `mapstructure:"SUBFINDER_NUM_OF_THREADS"`
-	AmassTimeout          int    `mapstructure:"AMASS_TIMEOUT"`
-	GowitnessTimeout      int    `mapstructure:"GOWITNESS_TIMEOUT"`
-	GowitnessResolutionX  int    `mapstructure:"GOWITNESS_RESOLUTION_X"`
-	GowitnessResolutionY  int    `mapstructure:"GOWITNESS_RESOLUTION_Y"`
-	GowitnessNumOfThreads int    `mapstructure:"GOWITNESS_NUM_OF_THREADS"`
-	GowitnessFullpage     bool   `mapstructure:"GOWITNESS_FULLPAGE"`
+	OutDir                         string `mapstructure:"OUT_DIR"`
+	Subkill3rWorkerCount           int    `mapstructure:"SUBKILL3R_WORKER_COUNT"`
+	Subkill3rServerAddr            string `mapstructure:"SUBKILL3R_SERVER_ADDR"`
+	Subkill3rWordlist              string `mapstructure:"SUBKILL3R_WORDLIST"`
+	PurednsWordlist                string `mapstructure:"PUREDNS_WORDLIST"`
+	PurednsResolvers               string `mapstructure:"PUREDNS_RESOLVERS"`
+	PurednsNumOfThreads            int    `mapstructure:"PUREDNS_NUM_OF_THREADS"`
+	GotatorPermlist                string `mapstructure:"GOTATOR_PERMLIST"`
+	GotatorDepth                   int    `mapstructure:"GOTATOR_DEPTH"`
+	GotatorNumbers                 int    `mapstructure:"GOTATOR_NUMBERS"`
+	GotatorNumOfThreads            int    `mapstructure:"GOTATOR_NUM_OF_THREADS"`
+	GotatorMindup                  bool   `mapstructure:"GOTATOR_MINDUP"`
+	GotatorAdv                     bool   `mapstructure:"GOTATOR_ADV"`
+	GotatorMd                      bool   `mapstructure:"GOTATOR_MD"`
+	SubfinderNumOfThreads          int    `mapstructure:"SUBFINDER_NUM_OF_THREADS"`
+	AmassTimeout                   int    `mapstructure:"AMASS_TIMEOUT"`
+	GowitnessTimeout               int    `mapstructure:"GOWITNESS_TIMEOUT"`
+	GowitnessResolutionX           int    `mapstructure:"GOWITNESS_RESOLUTION_X"`
+	GowitnessResolutionY           int    `mapstructure:"GOWITNESS_RESOLUTION_Y"`
+	GowitnessNumOfThreads          int    `mapstructure:"GOWITNESS_NUM_OF_THREADS"`
+	GowitnessFullpage              bool   `mapstructure:"GOWITNESS_FULLPAGE"`
+	GowitnessScreenshotFilter      bool   `mapstructure:"GOWITNESS_SCREENSHOT_FILTER"`
+	GowitnessScreenshotFilterCodes string `mapstructure:"GOWITNESS_SCREENSHOT_FILTER_CODES"`
 }
 
 func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
@@ -116,6 +118,7 @@ func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
 	viper.SetDefault("GOWITNESS_RESOLUTION_Y", 900)
 	viper.SetDefault("GOWITNESS_NUM_OF_THREADS", 4)
 	viper.SetDefault("GOWITNESS_FULLPAGE", false)
+	viper.SetDefault("GOWITNESS_SCREENSHOT_FILTER", false)
 
 	if path == "embedded" {
 		// Use the passed embedded FS to read the config file
