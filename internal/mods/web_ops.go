@@ -15,14 +15,16 @@ type WebOps struct {
 }
 
 type Gowitness struct {
-	Timeout      int
-	ResolutionX  int
-	ResolutionY  int
-	NumOfThreads int
-	Fullpage     bool
+	Timeout               int
+	ResolutionX           int
+	ResolutionY           int
+	NumOfThreads          int
+	Fullpage              bool
+	ScreenshotFilter      bool
+	ScreenshotFilterCodes string
 }
 
-func RunGowitness(outdirPath string, timeout, resolutionX, resolutionY, numOfThreads int, fullpage bool) error {
+func RunGowitness(outdirPath string, timeout, resolutionX, resolutionY, numOfThreads int, fullpage, screenshotFilter bool, screenshotFilterCodes string) error {
 
 	myLogger.Info("Running gowitness")
 
@@ -53,11 +55,17 @@ func RunGowitness(outdirPath string, timeout, resolutionX, resolutionY, numOfThr
 		cmdArgs = append(cmdArgs, "--fullpage")
 	}
 
+	if screenshotFilter {
+		cmdArgs = append(cmdArgs, "--screenshot-filter", screenshotFilterCodes)
+	}
+
 	// Convert cmdArgs to []interface{} for RunCommand
 	interfaceArgs := make([]interface{}, len(cmdArgs))
 	for i, arg := range cmdArgs {
 		interfaceArgs[i] = arg
 	}
+
+	myLogger.Debug("gowitness CMD: ", cmdArgs)
 
 	// Run gotator
 	_, err := utils.RunCommand("gowitness", interfaceArgs...)
@@ -74,7 +82,7 @@ func InitWebOps(cfg WebOps) error {
 
 	// Web screenshoting
 	myLogger.Info(color.MagentaString("WEB_SCREENSHOTING is activated"))
-	if err := RunGowitness(cfg.OutDirPath, cfg.Gowitness.Timeout, cfg.Gowitness.ResolutionX, cfg.Gowitness.ResolutionY, cfg.Gowitness.NumOfThreads, cfg.Gowitness.Fullpage); err != nil {
+	if err := RunGowitness(cfg.OutDirPath, cfg.Gowitness.Timeout, cfg.Gowitness.ResolutionX, cfg.Gowitness.ResolutionY, cfg.Gowitness.NumOfThreads, cfg.Gowitness.Fullpage, cfg.Gowitness.ScreenshotFilter, cfg.Gowitness.ScreenshotFilterCodes); err != nil {
 		return fmt.Errorf(color.RedString("Error running gowitness: %s", err))
 	}
 
