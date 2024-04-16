@@ -133,11 +133,13 @@ func main() {
 	webopsCFG := mods.WebOps{
 		OutDirPath: outDirPath,
 		Gowitness: mods.Gowitness{
-			Timeout:      config.GowitnessTimeout,
-			ResolutionX:  config.GowitnessResolutionX,
-			ResolutionY:  config.GowitnessResolutionY,
-			NumOfThreads: config.GowitnessNumOfThreads,
-			Fullpage:     config.GowitnessFullpage,
+			Timeout:               config.GowitnessTimeout,
+			ResolutionX:           config.GowitnessResolutionX,
+			ResolutionY:           config.GowitnessResolutionY,
+			NumOfThreads:          config.GowitnessNumOfThreads,
+			Fullpage:              config.GowitnessFullpage,
+			ScreenshotFilter:      config.GowitnessScreenshotFilter,
+			ScreenshotFilterCodes: config.GowitnessScreenshotFilterCodes,
 		},
 	}
 
