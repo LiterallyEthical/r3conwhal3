@@ -41,7 +41,7 @@ func RunHTTPX(filePath, outDirPath string) error {
 
 func InitFilterLiveDomains(outDirPath string) error {
 	modName := "FILTER_LIVE_DOMAINS"
-	myLogger.Info(color.BlueString("%s module initialized", modName))
+	myLogger.Info(color.BlueString("%s module initialized\n", modName))
 
 	// Check if the ACTIVE_SUBD_ENUM is run
 	if _, err := os.Stat("all_subdomains.txt"); err != nil {
