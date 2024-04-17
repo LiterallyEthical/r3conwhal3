@@ -20,12 +20,15 @@ var (
 )
 
 type PassiveEnum struct {
-	Domain     string
-	FilePath   string
-	OutDirPath string
-	Subfinder  Subfinder
-	Amass      Amass
-	Subkill3r  Subkill3r
+	Domain            string
+	FilePath          string
+	OutDirPath        string
+	EnableAmass       bool
+	EnableAssetfinder bool
+	EnableSubkill3r   bool
+	Subfinder         Subfinder
+	Amass             Amass
+	Subkill3r         Subkill3r
 }
 
 type Subfinder struct {
@@ -224,21 +227,30 @@ func InitSubdEnum(cfg PassiveEnum) error {
 		return fmt.Errorf(color.RedString("Error running subfinder for domain %s: %v\n", cfg.Domain, err))
 	}
 
-	if err := RunAssetfinder(cfg.Domain, cfg.FilePath); err != nil {
-		myLogger.Error("Error running assetfinder for domain %s: %v\n", cfg.Domain, err)
-	}
+	if cfg.EnableAssetfinder {
 
-	if err := RunAmass(cfg.Domain, cfg.FilePath, cfg.Amass.Timeout); err != nil {
-		myLogger.Error("Error running amass for cfg.Domain %s: %v\n", cfg.Domain, err)
-	}
-
-	if cfg.Subkill3r.Wordlist != "none" {
-		if err := RunSubkill3r(cfg.Domain, cfg.FilePath, cfg.Subkill3r.Wordlist, cfg.Subkill3r.ServerAddr, cfg.Subkill3r.WorkerCount); err != nil {
-			myLogger.Error("Error running subkill3r for cfg.Domain %s: %v", cfg.Domain, err)
-			myLogger.Warning("Look for SUBKILL3R_WORDLIST in config file to specify a wordlist\n")
+		if err := RunAssetfinder(cfg.Domain, cfg.FilePath); err != nil {
+			myLogger.Error("Error running assetfinder for domain %s: %v\n", cfg.Domain, err)
 		}
-	} else {
-		myLogger.Warning("subkill3r is not activated because wordlist is not provided\n")
+	}
+
+	if cfg.EnableAmass {
+
+		if err := RunAmass(cfg.Domain, cfg.FilePath, cfg.Amass.Timeout); err != nil {
+			myLogger.Error("Error running amass for cfg.Domain %s: %v\n", cfg.Domain, err)
+		}
+	}
+
+	if cfg.EnableSubkill3r {
+
+		if cfg.Subkill3r.Wordlist != "none" {
+			if err := RunSubkill3r(cfg.Domain, cfg.FilePath, cfg.Subkill3r.Wordlist, cfg.Subkill3r.ServerAddr, cfg.Subkill3r.WorkerCount); err != nil {
+				myLogger.Error("Error running subkill3r for cfg.Domain %s: %v", cfg.Domain, err)
+				myLogger.Warning("Look for SUBKILL3R_WORDLIST in config file to specify a wordlist\n")
+			}
+		} else {
+			myLogger.Warning("subkill3r is not activated because wordlist is not provided\n")
+		}
 	}
 
 	// Count total enumerated subdomains
