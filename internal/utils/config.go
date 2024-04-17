@@ -13,6 +13,9 @@ import (
 
 type Config struct {
 	OutDir                         string `mapstructure:"OUT_DIR"`
+	EnableSubkill3r                bool   `mapstructure:"ENABLE_SUBKILL3R"`
+	EnableAssetfinder              bool		`mapstructure:"ENABLE_ASSETFINDER"`
+	EnableAmass										 bool		`mapstructure:"ENABLE_AMASS"`
 	Subkill3rWorkerCount           int    `mapstructure:"SUBKILL3R_WORKER_COUNT"`
 	Subkill3rServerAddr            string `mapstructure:"SUBKILL3R_SERVER_ADDR"`
 	Subkill3rWordlist              string `mapstructure:"SUBKILL3R_WORDLIST"`
@@ -26,7 +29,7 @@ type Config struct {
 	GotatorMindup                  bool   `mapstructure:"GOTATOR_MINDUP"`
 	GotatorAdv                     bool   `mapstructure:"GOTATOR_ADV"`
 	GotatorMd                      bool   `mapstructure:"GOTATOR_MD"`
-	SubfinderNumOfThreads          int    `mapstructure:"SUBFINDER_NUM_OF_THREADS"`
+	SubfinderNumOfThreads          int    `mapstructure:"SUBFINDER_NUM_OF_THREADS"`	
 	AmassTimeout                   int    `mapstructure:"AMASS_TIMEOUT"`
 	GowitnessTimeout               int    `mapstructure:"GOWITNESS_TIMEOUT"`
 	GowitnessResolutionX           int    `mapstructure:"GOWITNESS_RESOLUTION_X"`
@@ -82,6 +85,10 @@ func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
 	viper.SetDefault("OUT_DIR", defaultDir)
 
 	// PASSIVE_ENUM configs
+	viper.SetDefault("ENABLE_ASSETFINDER", true)
+	viper.SetDefault("ENABLE_AMASS", true)
+	viper.SetDefault("ENABLE_SUBKILL3R", true)
+
 
 	// subfinder configs
 	viper.SetDefault("SUBFINDER_NUM_OF_THREADS", 100)
