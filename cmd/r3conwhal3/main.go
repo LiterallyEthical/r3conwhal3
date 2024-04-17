@@ -40,7 +40,7 @@ func main() {
 
 	// Define flags
 	var domain, outDir, configDir string
-	var enableAllMods, enablePassiveEnum, enableActiveEnum bool
+	var enableAllMods, enablePassiveEnum, enableActiveEnum, enableWebOps bool
 
 	pflag.StringVarP(&domain, "domain", "d", "", "Target domain to enumerate")
 	pflag.StringVarP(&configDir, "config-dir", "c", "embedded", "Path to directory which config.env exists")
@@ -48,6 +48,7 @@ func main() {
 	pflag.BoolVarP(&enablePassiveEnum, "passive", "p", false, "Perform passsive subdomain enumeration process")
 	pflag.BoolVarP(&enableActiveEnum, "active", "a", false, "Perform active recon processs (DNS bruteforce & DNS permutation)")
 	pflag.BoolVarP(&enableAllMods, "all", "A", true, "Perform all passive & active recon process")
+	pflag.BoolVarP(&enableWebOps, "webops", "w", false, "Perform web operations such as webscreenshoting, directory fuzzing etc.")
 	pflag.Parse()
 
 	config, err := utils.LoadConfig(configDir, docFS)
@@ -91,9 +92,12 @@ func main() {
 
 	// Set configs for PASSIVE_ENUM
 	passiveEnumCFG := mods.PassiveEnum{
-		Domain:     domain,
-		FilePath:   passiveFilePath,
-		OutDirPath: outDirPath,
+		Domain:            domain,
+		FilePath:          passiveFilePath,
+		OutDirPath:        outDirPath,
+		EnableAssetfinder: config.EnableAssetfinder,
+		EnableAmass:       config.EnableAmass,
+		EnableSubkill3r:   config.EnableSubkill3r,
 		Subfinder: mods.Subfinder{
 			NumOfThreads: config.SubfinderNumOfThreads,
 		},
@@ -161,8 +165,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := mods.InitWebOps(webopsCFG); err != nil {
-		log.Fatal(err)
+	if enableWebOps || (!enableWebOps && !enableActiveEnum && !enablePassiveEnum) {
+		if err := mods.InitWebOps(webopsCFG); err != nil {
+			log.Fatal(err)
+		}
 	}
-
 }
