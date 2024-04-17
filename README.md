@@ -62,6 +62,7 @@ chmod +x installer.sh
 | -d, --domain     | Target domain to enumerate                                        |
 | -o, --out-dir    | Directory to keep all output (default "$HOME/r3conwhal3/results") |
 | -p, --passive    | Perform passive subdomain enumeration process                     |
+| -w, --webops     | Perform web operations                                            |
 | -h, --help       | Show help menu                                                    |
 
 <div align="center">
@@ -117,8 +118,7 @@ r3conwhal3  -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]
 | ID  | Tool                                                           | Role                                                |
 | :-: | :------------------------------------------------------------- | :-------------------------------------------------- |
 |  1  | [httpx](https://github.com/projectdiscovery/httpx/tree/v1.3.7) | filtering live domains from the gathered subdomains |
-|  2  | [gowitness](https://github.com/sensepost/gowitness) | taking screenshots of filtered live domains
-
+|  2  | [gowitness](https://github.com/sensepost/gowitness)            | taking screenshots of filtered live domains         |
 
 # Disclaimer
 
