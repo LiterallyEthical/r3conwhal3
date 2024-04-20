@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"embed"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -291,4 +292,28 @@ func CleanUp() {
 	if err := os.RemoveAll(tmpDir); err != nil {
 		myLogger.Error("Error deleting tmp directory: %v\n", err)
 	}
+}
+
+// Copy file from src to dst
+func CopyFile(src, dst string) error {
+	// Open the source file for reading
+	sourceFile, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer sourceFile.Close()
+
+	destinationFile, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer destinationFile.Close()
+
+	_, err = io.Copy(destinationFile, sourceFile)
+	if err != nil {
+		return err
+	}
+
+	return destinationFile.Sync()
+
 }
