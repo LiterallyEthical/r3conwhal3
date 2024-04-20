@@ -89,9 +89,9 @@ r3conwhal3  -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]
 
 <div align="center">
 
-|                                                                                                                   :exclamation: **Disclaimer**                                                                                                                   |
-| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| [**subkille3r**](https://github.com/LiterallyEthical/r3conwhal3/blob/main/pkg/subkill3r/subkill3r.go) is in active development. By default it's excluded from the recon chain but if you want to use it, simply supply a wordlist that contains subdomain names. |
+|                                                             :exclamation: **Disclaimer**                                                              |
+| :---------------------------------------------------------------------------------------------------------------------------------------------------: |
+| It is possible to see more running examples for **r3conwhal3** on [**wiki**](https://github.com/LiterallyEthical/r3conwhal3/wiki/0x01%E2%80%90Usage). |
 
 </div>
 
