@@ -22,7 +22,8 @@ declare -A tools=(
     ["puredns"]="github.com/d3mondev/puredns/v2@latest"
     ["gotator"]="github.com/Josue87/gotator@latest"
     ["gowitness"]="github.com/sensepost/gowitness@latest"
-)
+    ["ffuf"]="github.com/ffuf/ffuf/v2@latest"
+  )
 
 # Function to check if a tool is installed
 is_tool_installed() {
