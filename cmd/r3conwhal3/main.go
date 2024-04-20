@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	cmds     = []string{"subfinder", "assetfinder", "amass", "httpx", "massdns", "puredns", "gotator", "gowitness"}
+	cmds     = []string{"subfinder", "assetfinder", "amass", "httpx", "massdns", "puredns", "gotator", "gowitness", "ffuf"}
 	myLogger = logger.GetLogger()
 	//go:embed docs/*
 	docFS          embed.FS
@@ -135,7 +135,9 @@ func main() {
 
 	// Set configs for WEB_OPS
 	webopsCFG := mods.WebOps{
-		OutDirPath: outDirPath,
+		OutDirPath:      outDirPath,
+		EnableGowitness: config.EnableGowitness,
+		EnableFFUF:      config.EnableFFUF,
 		Gowitness: mods.Gowitness{
 			Timeout:               config.GowitnessTimeout,
 			ResolutionX:           config.GowitnessResolutionX,
@@ -144,6 +146,19 @@ func main() {
 			Fullpage:              config.GowitnessFullpage,
 			ScreenshotFilter:      config.GowitnessScreenshotFilter,
 			ScreenshotFilterCodes: config.GowitnessScreenshotFilterCodes,
+		},
+		FFUF: mods.FFUF{
+			NumOfThreads:       config.FFUFNumOfThreads,
+			Maxtime:            config.FFUFMaxtime,
+			Rate:               config.FFUFRate,
+			Timeout:            config.FFUFTimeout,
+			Wordlist:           config.FFUFWordlist,
+			MatchHTTPCode:      config.FFUFMatchHTTPCode,
+			FilterResponseSize: config.FFUFFilterResponseSize,
+			OutputFormat:       config.FFUFOutputFormat,
+			Output:             config.FFUFOutput,
+			SF:                 config.FFUFSF,
+			SE:                 config.FFUFSE,
 		},
 	}
 
