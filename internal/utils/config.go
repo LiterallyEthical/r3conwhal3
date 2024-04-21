@@ -149,7 +149,7 @@ func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
 
 	// FFUF settings
 	viper.SetDefault("FFUF_NUM_OF_THREADS", 40)
-	viper.SetDefault("FFUF_MAXTIME", 0)
+	viper.SetDefault("FFUF_MAXTIME", 600)
 	viper.SetDefault("FFUF_RATE", 0)
 	viper.SetDefault("FFUF_TIMEOUT", 10)
 	viper.SetDefault("FFUF_WORDLIST", ffuf_wordlist)
