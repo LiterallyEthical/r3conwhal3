@@ -54,7 +54,12 @@ func RunGowitness(outdirPath string, timeout, resolutionX, resolutionY, numOfThr
 	utils.ShowProgress()
 
 	// Run RunGowitness
-	screenshotPath := filepath.Join(outdirPath, "screenshots/")
+	screenshotPath := filepath.Join(outdirPath, "screenshots")
+	if err := os.Mkdir(screenshotPath, 0755); err != nil {
+		return err
+	}
+	myLogger.Debug("Screenshot path:", screenshotPath)
+
 	filename := filepath.Join(outdirPath, "live_subdomains.txt")
 
 	// Prepare the command arguments
