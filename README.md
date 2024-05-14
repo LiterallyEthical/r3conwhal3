@@ -17,6 +17,8 @@
 
 # Installation
 
+## UNIX/WSL
+
 - `r3conwhal3` requires go >= 1.21.1+ to install and paths correctly set ($GOPATH, $GOROOT).
 
 Run the following command to get the repo:
@@ -41,6 +43,21 @@ cd r3conwhal3/
 chmod +x installer.sh
 ./installer.sh
 ```
+
+## Docker Image
+
+- Pull the image
+
+```
+docker pull literallyethical/r3conwhal3
+```
+
+- Run the container
+```
+docker run -it -v </path/to/folder>:/app/results --rm literallyethical/r3conwhal3 -d <target-domain> -o /app/results
+```
+
+- Specify the **OutputFolder** to saving results for later and choose a **target domain** to enumerate. For detail information, please refer to the [Docker](https://hub.docker.com/r/literallyethical/r3conwhal3) documentation.
 
 <div align="center">
   
