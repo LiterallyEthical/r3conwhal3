@@ -15,9 +15,9 @@
 
 `r3conwhale` aims to develop a multifunctional recon chain for web applications, intelligently interpreting collected data, and optimizing performance and resource consumption through a concurrency-based approach.
 
-# Installation
+## 💿 Installation
 
-## UNIX/WSL
+### UNIX/WSL
 
 - `r3conwhal3` requires go >= 1.21.1+ to install and paths correctly set ($GOPATH, $GOROOT).
 
@@ -44,7 +44,7 @@ chmod +x installer.sh
 ./installer.sh
 ```
 
-## Docker Image
+### Docker Image 🐳
 
 - Pull the image
 
@@ -53,6 +53,7 @@ docker pull literallyethical/r3conwhal3
 ```
 
 - Run the container
+
 ```
 docker run -it -v </path/to/folder>:/app/results --rm literallyethical/r3conwhal3 -d <target-domain> -o /app/results
 ```
@@ -67,9 +68,21 @@ docker run -it -v </path/to/folder>:/app/results --rm literallyethical/r3conwhal
 
 </div>
 
-# Usage
+## ⚙️ Config file
 
-## Options
+- Download and configure CFG file
+
+```
+wget https://raw.githubusercontent.com/LiterallyEthical/r3conwhal3/main/cmd/r3conwhal3/docs/config.env
+```
+
+- The **config.env** file enables control over the entire execution of the automation chain.
+- You can find the default configuration file on [here](https://github.com/LiterallyEthical/r3conwhal3/blob/main/cmd/r3conwhal3/docs/config.env).
+- It is possible to set various scanning modes, tool options, personalized wordlists etc. You can find the detailed config options on [wiki](https://github.com/LiterallyEthical/r3conwhal3/wiki/0x02%E2%80%90Configuration-File).
+
+## Usage
+
+### Options
 
 | Flag             | Description                                                       |
 | :--------------- | :---------------------------------------------------------------- |
@@ -90,15 +103,15 @@ docker run -it -v </path/to/folder>:/app/results --rm literallyethical/r3conwhal
 
 </div>
 
-## Example Usage
+### Example Usage
 
-### Running the scan with default options
+#### Running the scan with default options
 
 ```
 r3conwhal3 -d <domain-name>
 ```
 
-### Running the scan with custom options
+#### Running the scan with custom options
 
 ```
 r3conwhal3  -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]
@@ -112,9 +125,9 @@ r3conwhal3  -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]
 
 </div>
 
-# Features
+## Features
 
-## <div style="position: relative; display: flex; align-items: flex-end;"><img src="assets/images/inspector_gadget.ico" alt="Your Icon" width="60" height="60"> Passive Subdomain Enumeration
+### <div style="position: relative; display: flex; align-items: flex-end;"><img src="assets/images/inspector_gadget.ico" alt="Your Icon" width="60" height="60"> Passive Subdomain Enumeration
 
 | ID  | Tool                                                                      | Role                                                  |
 | :-: | :------------------------------------------------------------------------ | :---------------------------------------------------- |
@@ -123,14 +136,14 @@ r3conwhal3  -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]
 |  3  | [amass](https://github.com/owasp-amass/amass)                             | discovering more subdomains                           |
 |  4  | [subkill3r](https://github.com/LiterallyEthical/r3conwhal3/pkg/subkill3r) | discovering more subdomains (still under development) |
 
-## Active Subdomain Enumeration
+### Active Subdomain Enumeration
 
 | ID  | Tool                                           | Role                                 |
 | :-: | :--------------------------------------------- | :----------------------------------- |
 |  1  | [puredns](https://github.com/d3mondev/puredns) | subdomain resolving and bruteforcing |
 |  2  | [gotator](https://github.com/Josue87/gotator)  | DNS permutations                     |
 
-## Web Operations
+### Web Operations
 
 | ID  | Tool                                                           | Role                                                |
 | :-: | :------------------------------------------------------------- | :-------------------------------------------------- |
@@ -138,6 +151,6 @@ r3conwhal3  -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]
 |  2  | [gowitness](https://github.com/sensepost/gowitness)            | taking screenshots of filtered live domains         |
 |  3  | [ffuf](https://github.com/ffuf/ffuf)                           | directory discovery & fuzzing                       |
 
-# Disclaimer
+## Disclaimer
 
 Usage of this program for attacking targets without consent is illegal. It is the user's responsibility to obey all applicable laws. The developer assumes no liability and is not responsible for any misuse or damage caused by this program. Please use responsibly.
