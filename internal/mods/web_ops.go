@@ -17,6 +17,7 @@ type WebOps struct {
 	FFUF            FFUF
 	EnableGowitness bool
 	EnableFFUF      bool
+	EnableWebGalery bool
 }
 
 type Gowitness struct {
@@ -97,14 +98,15 @@ func RunGowitness(outdirPath string, timeout, resolutionX, resolutionY, numOfThr
 	return nil
 }
 
-func RunWebServer(outdirPath string) {
+func RunWebServer(outdirPath string) error {
 
 	screenshotPath := filepath.Join(outdirPath, "screenshots")
 	err := web.StartServer(screenshotPath)
 	if err != nil {
-		myLogger.Error("Ooops, something wrong with web server! %v", err)
+		return fmt.Errorf("Ooops, something wrong with web server! %v", err)
 	}
 
+	return nil
 }
 
 func RunFFUF(numOfThreads, maxtime, rate, timeout int, outDirPath, wordlist, matchHTTPCode, filterResponseSize, outputFormat, output string, SF, SE bool) error {
