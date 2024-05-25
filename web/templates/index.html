@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>R3conwhale Web Gallery</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      h1 {
+        text-align: center;
+        color: #9b59b6;
+        margin-top: 10px;
+        font-size: 24px;
+      }
+
+      .gallery {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .image {
+        margin: 20px; /* Adds vertical spacing */
+        width: 100%; /* Adjusts the width for image container */
+        text-align: center; /* Center aligns the image within its container */
+      }
+
+      .image img {
+        width: 80%; /* Controls width of the image */
+        max-width: 1440px; /* Maximum width */
+        height: auto; /* Adjusts height to maintain aspect ratio */
+        border: 0.1px solid black; /* Ensures no borders around images */
+      }
+
+      .image p {
+        margin-top: 8px; /* Increase padding above the filename */
+        padding: 2px 3px;
+        font-family: "Arial", sans-serif;
+        color: #7a42f4; /* Set filename color to match button color */
+        font-size: 20px;
+        background-color: #f8f8f8;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0 40px; /* Adds bottom padding */
+        font-size: 16px;
+      }
+
+      .pagination a {
+        text-decoration: none;
+        color: #fff;
+        padding: 10px 15px;
+        margin: 0 10px;
+        border-radius: 5px;
+        background-color: #333; /* Default background color */
+        transition:
+          background-color 0.3s,
+          transform 0.3s;
+      }
+
+      .pagination a.next {
+        background-color: #7a42f4; /* Purple */
+      }
+
+      .pagination a.prev {
+        background-color: #9b59b6; /* Grey for default state of prev */
+      }
+
+      .pagination a.next:hover,
+      .pagination a.next:focus {
+        background-color: #9b59b6; /* Darker purple when hovered */
+      }
+
+      .pagination a.prev:hover,
+      .pagination a.prev:focus {
+        background-color: #7a42f4; /* Change to purple when hovered */
+      }
+
+      .pagination a.active {
+        background-color: #4caf50;
+        color: white;
+        border: 1px solid #4caf50;
+      }
+
+      .pagination a:hover {
+        background-color: #ddd;
+      }
+
+      a {
+        color: black; /* Plain black color for URLs */
+        text-decoration: none;
+      }
+
+      a:hover {
+        color: #800080; /* Purplish color on hover */
+      }
+
+      body.dark-mode a {
+        color: #ccc; /* Light gray color for URLs in dark mode */
+      }
+
+      body.dark-mode a:hover {
+        color: #800080; /* Purplish color on hover in dark mode */
+      }
+
+      /* Dark mode specific styles */
+      body.dark-mode {
+        background: #121212;
+        color: #e0e0e0;
+      }
+
+      body.dark-mode .image p {
+        background-color: #333;
+        color: #ddd;
+      }
+
+      body.dark-mode .gallery {
+        border-color: #424242;
+      }
+
+      body.dark-mode a {
+        background-color: #333;
+        color: #ddd;
+      }
+
+      body.dark-mode .pagination a:hover,
+      body.dark-mode .pagination a:focus {
+        background-color: #555;
+      }
+
+      .theme-toggle {
+        position: fixed;
+        top: 10px;
+        font-size: 1.5em;
+        right: 10px;
+        padding: 8px 12px;
+        background-color: #f8f8f8;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+
+      .theme-toggle:hover {
+        background-color: #e2e2e2;
+      }
+
+      .dark-mode .theme-toggle {
+        background-color: #333;
+        color: #ddd;
+      }
+
+      .dark-mode .theme-toggle:hover {
+        background-color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>R3conwhale Web Gallery</h1>
+    <div class="gallery">
+      {{range .Images}}
+      <div class="image">
+        <a href="{{.URL}}" target="_blank">
+          <img src="/images/{{.Name}}" alt="{{.Name}}" />
+        </a>
+        <p>
+          <a href="{{.URL}}" target="_blank">{{.Name | trimSuffix ".png"}}</a>
+        </p>
+      </div>
+      {{end}}
+    </div>
+    <div class="pagination">
+      {{if .HasPrev}}
+      <a href="/?page={{.PrevPage}}" class="prev">Previous</a>
+      {{end}} {{range .PageNumbers}} {{if eq . -1}}
+      <span>...</span>
+      {{else}}
+      <a href="/?page={{.}}" class="{{if eq $.CurrentPage .}}active{{end}}"
+        >{{.}}</a
+      >
+      {{end}} {{end}} {{if .HasNext}}
+      <a href="/?page={{.NextPage}}" class="next">Next</a>
+      {{end}}
+    </div>
+    <button onclick="toggleDarkMode()" id="darkModeToggle" class="theme-toggle">
+      <i class="fas fa-sun" id="sunIcon"></i>
+      <i class="fas fa-moon" id="moonIcon" style="display: none"></i>
+    </button>
+    <script>
+      function toggleDarkMode() {
+        var element = document.body;
+        var sunIcon = document.getElementById("sunIcon");
+        var moonIcon = document.getElementById("moonIcon");
+        element.classList.toggle("dark-mode");
+        if (element.classList.contains("dark-mode")) {
+          sunIcon.style.display = "none";
+          moonIcon.style.display = "inline";
+        } else {
+          sunIcon.style.display = "inline";
+          moonIcon.style.display = "none";
+        }
+        // Save the current mode in local storage
+        localStorage.setItem(
+          "darkMode",
+          element.classList.contains("dark-mode"),
+        );
+      }
+
+      // Check local storage to apply the dark mode if it was enabled previously
+      window.onload = function () {
+        if (localStorage.getItem("darkMode") === "true") {
+          document.body.classList.add("dark-mode");
+          document.getElementById("sunIcon").style.display = "none";
+          document.getElementById("moonIcon").style.display = "inline";
+        }
+      };
+    </script>
+  </body>
+</html>
