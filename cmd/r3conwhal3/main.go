@@ -184,5 +184,8 @@ func main() {
 		if err := mods.InitWebOps(webopsCFG); err != nil {
 			log.Fatal(err)
 		}
+		if webopsCFG.EnableGowitness {
+			defer mods.RunWebServer(outDirPath)
+		}
 	}
 }
