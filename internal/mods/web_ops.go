@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/LiterallyEthical/r3conwhal3/internal/utils"
+	"github.com/LiterallyEthical/r3conwhal3/web"
 	"github.com/fatih/color"
 )
 
@@ -58,7 +59,6 @@ func RunGowitness(outdirPath string, timeout, resolutionX, resolutionY, numOfThr
 	if err := os.Mkdir(screenshotPath, 0755); err != nil {
 		return err
 	}
-	myLogger.Debug("Screenshot path:", screenshotPath)
 
 	filename := filepath.Join(outdirPath, "live_subdomains.txt")
 
@@ -95,6 +95,16 @@ func RunGowitness(outdirPath string, timeout, resolutionX, resolutionY, numOfThr
 	}
 
 	return nil
+}
+
+func RunWebServer(outdirPath string) {
+
+	screenshotPath := filepath.Join(outdirPath, "screenshots")
+	err := web.StartServer(screenshotPath)
+	if err != nil {
+		myLogger.Error("Ooops, something wrong with web server! %v", err)
+	}
+
 }
 
 func RunFFUF(numOfThreads, maxtime, rate, timeout int, outDirPath, wordlist, matchHTTPCode, filterResponseSize, outputFormat, output string, SF, SE bool) error {
