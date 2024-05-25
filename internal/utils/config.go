@@ -18,6 +18,7 @@ type Config struct {
 	EnableAmass                    bool   `mapstructure:"ENABLE_AMASS"`
 	EnableGowitness                bool   `mapstructure:"ENABLE_GOWITNESS"`
 	EnableFFUF                     bool   `mapstructure:"ENABLE_FFUF"`
+	EnableWebGalery                bool   `mapstructure:"ENABLE_WEB_GALERY"`
 	Subkill3rWorkerCount           int    `mapstructure:"SUBKILL3R_WORKER_COUNT"`
 	Subkill3rServerAddr            string `mapstructure:"SUBKILL3R_SERVER_ADDR"`
 	Subkill3rWordlist              string `mapstructure:"SUBKILL3R_WORDLIST"`
@@ -102,6 +103,7 @@ func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
 
 	// main configs
 	viper.SetDefault("OUT_DIR", defaultDir)
+	viper.SetDefault("ENABLE_WEB_GALERY", true)
 
 	// PASSIVE_ENUM configs
 	viper.SetDefault("ENABLE_ASSETFINDER", true)
