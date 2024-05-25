@@ -6,7 +6,10 @@ import (
 	"io/fs"
 	"log"
 	"os"
+	"os/signal"
 	"path"
+	"sync"
+	"syscall"
 
 	"github.com/LiterallyEthical/r3conwhal3/internal/mods"
 	"github.com/LiterallyEthical/r3conwhal3/internal/utils"
@@ -25,8 +28,6 @@ var (
 )
 
 func main() {
-
-	defer utils.CleanUp()
 
 	// Accessing files from the embedded docs directory
 	data, err := fs.ReadFile(docFS, "docs/banner.txt")
@@ -138,6 +139,7 @@ func main() {
 		OutDirPath:      outDirPath,
 		EnableGowitness: config.EnableGowitness,
 		EnableFFUF:      config.EnableFFUF,
+		EnableWebGalery: config.EnableWebGalery,
 		Gowitness: mods.Gowitness{
 			Timeout:               config.GowitnessTimeout,
 			ResolutionX:           config.GowitnessResolutionX,
@@ -162,6 +164,53 @@ func main() {
 		},
 	}
 
+	// Channel to singal cleanup
+	cleanupChan := make(chan struct{})
+
+	// Channel to handle OS signals
+	signalChan := make(chan os.Signal, 1)
+
+	// Register for interrupt (CTRL+C) and termination signals
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+
+	// Defer statement to sensure cleanup is called
+	defer func() {
+		myLogger.Info("Cleanup process is running...")
+		utils.CleanUp()
+		myLogger.Info("Cleanup complete, exiting...")
+	}()
+
+	// Ensure the cleanup channel is only closed once
+	var once sync.Once
+	closeCleanupChan := func() {
+		once.Do(func() {
+			close(cleanupChan)
+		})
+	}
+
+	// Run the app
+	go func() {
+		if err := runApplication(enablePassiveEnum, enableActiveEnum, enableWebOps, passiveEnumCFG, activeEnumCFG, webopsCFG, outDirPath, cleanupChan, closeCleanupChan); err != nil {
+			myLogger.Error("Error while running r3conwhal3: %v", err)
+			// Signal to cleanup
+			closeCleanupChan()
+		}
+	}()
+
+	select {
+	case <-signalChan:
+		fmt.Println()
+		myLogger.Warning("Received interrupt signal, initiating cleanup...")
+		closeCleanupChan()
+	case <-cleanupChan:
+		fmt.Println()
+		myLogger.Warning("Received cleanup signal, initiating cleanup...")
+	}
+}
+
+func runApplication(enablePassiveEnum, enableActiveEnum, enableWebOps bool, passiveEnumCFG mods.PassiveEnum, activeEnumCFG mods.ActiveEnum, webopsCFG mods.WebOps, outDirPath string, cleanupChan chan struct{}, closeCleanupChan func()) error {
+	defer closeCleanupChan()
+
 	// Run passive enumeration if enabled or no flags are provided (default behavior)
 	if enablePassiveEnum || (!enableActiveEnum && !enablePassiveEnum) {
 		if err := mods.InitSubdEnum(passiveEnumCFG); err != nil {
@@ -172,20 +221,35 @@ func main() {
 	// Run active enumeration if enabled or no flags are provided (default behavior)
 	if enableActiveEnum || (!enableActiveEnum && !enablePassiveEnum) {
 		if err := mods.InitActiveSubdEnum(activeEnumCFG); err != nil {
-			log.Fatal(err)
+			myLogger.Error("Error in InitActiveSubdEnum:", err)
+			return err
 		}
 	}
 
 	if err := mods.InitFilterLiveDomains(outDirPath); err != nil {
-		log.Fatal(err)
+		myLogger.Error("Error in InitFilterLiveDomains:", err)
+		return err
 	}
 
 	if enableWebOps || (!enableWebOps && !enableActiveEnum && !enablePassiveEnum) {
 		if err := mods.InitWebOps(webopsCFG); err != nil {
-			log.Fatal(err)
+			myLogger.Error("Error in InitWebOps:", err)
+			return err
 		}
-		if webopsCFG.EnableGowitness {
-			defer mods.RunWebServer(outDirPath)
+		if webopsCFG.EnableGowitness && webopsCFG.EnableWebGalery {
+			go func() {
+				if err := mods.RunWebServer(outDirPath); err != nil {
+					myLogger.Error("Web server error:", err)
+					closeCleanupChan()
+				}
+			}()
 		}
+	}
+
+	select {
+	case <-cleanupChan:
+		fmt.Println()
+		myLogger.Warning("Cleanup signal received, stopping application tasks...")
+		return nil
 	}
 }
