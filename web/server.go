@@ -92,6 +92,15 @@ func StartServer(imageDir string) error {
 
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(imageDir))))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+
+		// Handle panics
+		defer func() {
+			if r := recover(); r != nil {
+				http.Error(w, "internal server error", http.StatusInternalServerError)
+				myLogger.Error("Recovered from panic:", r)
+			}
+		}()
+
 		// Set no-cache headers
 		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 		w.Header().Set("Pragma", "no-cache")
@@ -101,6 +110,7 @@ func StartServer(imageDir string) error {
 		files, err := os.ReadDir(imageDir)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			myLogger.Error("Error reading directory:", err)
 			return
 		}
 
@@ -112,6 +122,11 @@ func StartServer(imageDir string) error {
 		end := start + imagesPerPage
 		if end > len(files) {
 			end = len(files)
+		}
+
+		if start >= len(files) {
+			http.Error(w, "Page out of range:", http.StatusBadRequest)
+			myLogger.Error("Page out of range: requested page", page)
 		}
 
 		for _, file := range files[start:end] {
@@ -164,10 +179,13 @@ func StartServer(imageDir string) error {
 			ShowEllipsis: showEllipsis,
 		}
 
-		tmpl.Execute(w, data)
+		if err := tmpl.Execute(w, data); err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			myLogger.Error("Error executing template:", err)
+		}
 	})
 
-	myLogger.Info("R3conwhal3 Web Galery starting on http://localhost:8080")
+	myLogger.Info("R3conwhal3 Web Galery running on http://localhost:8080")
 	err = http.ListenAndServe(":8080", nil)
 	if err != nil {
 		return fmt.Errorf("ListenAndServe: %v", err)
