@@ -14,6 +14,7 @@ import (
 	"github.com/LiterallyEthical/r3conwhal3/internal/mods"
 	"github.com/LiterallyEthical/r3conwhal3/internal/utils"
 	"github.com/LiterallyEthical/r3conwhal3/pkg/logger"
+	"github.com/LiterallyEthical/r3conwhal3/web"
 	"github.com/fatih/color"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -28,7 +29,6 @@ var (
 )
 
 func main() {
-
 	// Accessing files from the embedded docs directory
 	data, err := fs.ReadFile(docFS, "docs/banner.txt")
 	if err != nil {
@@ -39,18 +39,70 @@ func main() {
 	// Print the banner
 	fmt.Println(color.CyanString(string(data)))
 
+	// Define subcommands
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: r3conwhal3 [run] [galery] options")
+		os.Exit(1)
+	}
+
+	// Switch on the subcommand
+	switch os.Args[1] {
+	case "galery":
+		handleGalery(os.Args[2:])
+	case "run":
+		handleRun(os.Args[2:])
+	default:
+		fmt.Println("expected 'galery' or 'run' subcommands")
+		os.Exit(1)
+	}
+}
+
+func handleGalery(args []string) {
+	// Create a flag set for the galery subcommand
+	galeryCmd := pflag.NewFlagSet("galery", pflag.ExitOnError)
+
+	// Define flags for the galery subcommand
+	var screenshotPath string
+	galeryCmd.StringVarP(&screenshotPath, "path", "p", "", "Path to screenshots")
+
+	// Parse the flags
+	galeryCmd.Parse(args)
+
+	// Ensure the path is provided
+	if screenshotPath == "" {
+		fmt.Println("Usage: r3conwhal3 galery -p <path-to-screenshots>")
+		galeryCmd.PrintDefaults()
+		return
+	}
+
+	// Init r3conwhal3 web galery
+	myLogger.Info("Starting web server for gallery...")
+	if err := web.StartServer(screenshotPath); err != nil {
+		myLogger.Error("Web server error:", err)
+	}
+}
+
+func handleRun(args []string) {
 	// Define flags
 	var domain, outDir, configDir string
 	var enableAllMods, enablePassiveEnum, enableActiveEnum, enableWebOps bool
 
-	pflag.StringVarP(&domain, "domain", "d", "", "Target domain to enumerate")
-	pflag.StringVarP(&configDir, "config-dir", "c", "embedded", "Path to directory which config.env exists")
-	pflag.StringVarP(&outDir, "out-dir", "o", "$HOME/user/r3conwhal3/results", "Directory to keep all output")
-	pflag.BoolVarP(&enablePassiveEnum, "passive", "p", false, "Perform passsive subdomain enumeration process")
-	pflag.BoolVarP(&enableActiveEnum, "active", "a", false, "Perform active recon processs (DNS bruteforce & DNS permutation)")
-	pflag.BoolVarP(&enableAllMods, "all", "A", true, "Perform all passive & active recon process")
-	pflag.BoolVarP(&enableWebOps, "webops", "w", false, "Perform web operations such as webscreenshoting, directory fuzzing etc.")
-	pflag.Parse()
+	runCmd := pflag.NewFlagSet("run", pflag.ExitOnError)
+	runCmd.StringVarP(&domain, "domain", "d", "", "Target domain to enumerate")
+	runCmd.StringVarP(&configDir, "config-dir", "c", "embedded", "Path to directory which config.env exists")
+	runCmd.StringVarP(&outDir, "out-dir", "o", "$HOME/user/r3conwhal3/results", "Directory to keep all output")
+	runCmd.BoolVarP(&enablePassiveEnum, "passive", "p", false, "Perform passive subdomain enumeration process")
+	runCmd.BoolVarP(&enableActiveEnum, "active", "a", false, "Perform active recon process (DNS brute-force & DNS permutation)")
+	runCmd.BoolVarP(&enableAllMods, "all", "A", true, "Perform all passive & active recon process")
+	runCmd.BoolVarP(&enableWebOps, "webops", "w", false, "Perform web operations such as web screenshotting, directory fuzzing etc.")
+	runCmd.Parse(args)
+
+	// Check if the domain is provided or not
+	if domain == "" {
+		fmt.Println("Usage: r3conwhal3 run -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]")
+		runCmd.PrintDefaults()
+		return
+	}
 
 	config, err := utils.LoadConfig(configDir, docFS)
 	if err != nil {
@@ -58,19 +110,13 @@ func main() {
 	}
 
 	// Set the flag value from the config if not explicitly set via command line
-	if !pflag.Lookup("out-dir").Changed {
+	if !runCmd.Lookup("out-dir").Changed {
 		// Get the value from config, if flag is not set
 		outDir = viper.GetString("OUT_DIR")
 	}
 
 	// Binding variables from config.env to flags
-	viper.BindPFlag("OUT_DIR", pflag.Lookup("out-dir"))
-
-	// Check if the domain is provided or not
-	if domain == "" {
-		fmt.Println("Usage: go run main.go -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]")
-		return
-	}
+	viper.BindPFlag("OUT_DIR", runCmd.Lookup("out-dir"))
 
 	// Check for installation of the required tools
 	if err := utils.CheckInstallations(cmds); err != nil {
@@ -164,7 +210,7 @@ func main() {
 		},
 	}
 
-	// Channel to singal cleanup
+	// Channel to signal cleanup
 	cleanupChan := make(chan struct{})
 
 	// Channel to handle OS signals
@@ -173,7 +219,7 @@ func main() {
 	// Register for interrupt (CTRL+C) and termination signals
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
-	// Defer statement to sensure cleanup is called
+	// Defer statement to ensure cleanup is called
 	defer func() {
 		myLogger.Info("Cleanup process is running...")
 		utils.CleanUp()
@@ -243,13 +289,18 @@ func runApplication(enablePassiveEnum, enableActiveEnum, enableWebOps bool, pass
 					closeCleanupChan()
 				}
 			}()
+			// Wait for the cleanup signal if the web server is running
+			select {
+			case <-cleanupChan:
+				fmt.Println()
+				myLogger.Warning("Cleanup signal received, stopping application tasks...")
+				return nil
+			}
+		} else {
+			// If web server is not running, return immediately after webopsCFG
+			return nil
 		}
 	}
 
-	select {
-	case <-cleanupChan:
-		fmt.Println()
-		myLogger.Warning("Cleanup signal received, stopping application tasks...")
-		return nil
-	}
+	return nil
 }
