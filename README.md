@@ -55,7 +55,7 @@ docker pull literallyethical/r3conwhal3
 - Run the container
 
 ```
-docker run -it -v </path/to/folder>:/app/results --rm literallyethical/r3conwhal3 -d <target-domain> -o /app/results
+docker run -it -v </path/to/folder>:/app/results --rm literallyethical/r3conwhal3 run -d <target-domain> -o /app/results
 ```
 
 - Specify the **OutputFolder** to saving results for later and choose a **target domain** to enumerate. For detail information, please refer to the [Docker](https://hub.docker.com/r/literallyethical/r3conwhal3) documentation.
@@ -82,18 +82,23 @@ wget https://raw.githubusercontent.com/LiterallyEthical/r3conwhal3/main/cmd/r3co
 
 ## Usage
 
+```
+r3conwhal3 [run] [galery] options
+```
+
 ### Options
 
-| Flag             | Description                                                       |
-| :--------------- | :---------------------------------------------------------------- |
-| -A, --all        | Perform all passive & active recon process                        |
-| -a, --active     | Perform active recon process (DNS bruteforce & DNS permutation)   |
-| -c, --config-dir | Path to directory which config.env exists (default "embedded")    |
-| -d, --domain     | Target domain to enumerate                                        |
-| -o, --out-dir    | Directory to keep all output (default "$HOME/r3conwhal3/results") |
-| -p, --passive    | Perform passive subdomain enumeration process                     |
-| -w, --webops     | Perform web operations                                            |
-| -h, --help       | Show help menu                                                    |
+| subcommand   | Flag             | Description                                                       |
+| :----------- | :--------------- | :---------------------------------------------------------------- |
+| run          | -A, --all        | Perform all passive & active recon process                        |
+| run          | -a, --active     | Perform active recon process (DNS bruteforce & DNS permutation)   |
+| run          | -c, --config-dir | Path to directory which config.env exists (default "embedded")    |
+| run          | -d, --domain     | Target domain to enumerate                                        |
+| run          | -o, --out-dir    | Directory to keep all output (default "$HOME/r3conwhal3/results") |
+| run          | -p, --passive    | Perform passive subdomain enumeration process                     |
+| run          | -w, --webops     | Perform web operations                                            |
+| galery       | -p, --path       | Path to screenshots directory                                     |
+| run & galery | -h, --help       | Show help menu                                                    |
 
 <div align="center">
 
@@ -108,13 +113,13 @@ wget https://raw.githubusercontent.com/LiterallyEthical/r3conwhal3/main/cmd/r3co
 #### Running the scan with default options
 
 ```
-r3conwhal3 -d <domain-name>
+r3conwhal3 run -d <domain-name>
 ```
 
 #### Running the scan with custom options
 
 ```
-r3conwhal3  -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]
+r3conwhal3 run  -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>]
 ```
 
 <div align="center">
