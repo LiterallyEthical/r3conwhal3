@@ -55,7 +55,7 @@ docker pull literallyethical/r3conwhal3
 - Run the container
 
 ```
-docker run -it -v </path/to/folder>:/app/results --rm literallyethical/r3conwhal3 run -d <target-domain> -o /app/results
+docker run -it -v </path/to/folder>:/app/results -p 8080:8080 --rm literallyethical/r3conwhal3 run -d <target-domain>  -o /app/results
 ```
 
 - Specify the **OutputFolder** to saving results for later and choose a **target domain** to enumerate. For detail information, please refer to the [Docker](https://hub.docker.com/r/literallyethical/r3conwhal3) documentation.
