@@ -19,6 +19,7 @@ type Config struct {
 	EnableGowitness                bool   `mapstructure:"ENABLE_GOWITNESS"`
 	EnableFFUF                     bool   `mapstructure:"ENABLE_FFUF"`
 	EnableWebGalery                bool   `mapstructure:"ENABLE_WEB_GALERY"`
+	EnableSubzy                    bool   `mapstructure:"ENABLE_SUBZY"`
 	Subkill3rWorkerCount           int    `mapstructure:"SUBKILL3R_WORKER_COUNT"`
 	Subkill3rServerAddr            string `mapstructure:"SUBKILL3R_SERVER_ADDR"`
 	Subkill3rWordlist              string `mapstructure:"SUBKILL3R_WORDLIST"`
@@ -52,6 +53,12 @@ type Config struct {
 	FFUFOutput                     string `mapstructure:"FFUF_OUTPUT"`
 	FFUFSF                         bool   `mapstructure:"FFUF_SF"`
 	FFUFSE                         bool   `mapstructure:"FFUF_SE"`
+	SUBZYConcurrency               int    `mapstructure:"SUBZY_CONCURRENCY"`
+	SUBZYTimeout                   int    `mapstructure:"SUBZY_TIMEOUT"`
+	SUBZYHideFails                 bool   `mapstructure:"SUBZY_HIDE_FAILS"`
+	SUBZYHTTPS                     bool   `mapstructure:"SUBZY_HTTPS"`
+	SUBZYVerifySSL                 bool   `mapstructure:"SUBZY_VERIFY_SSL"`
+	SUBZYVuln                      bool   `mapstructure:"SUBZY_VULN"`
 }
 
 func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
@@ -161,6 +168,16 @@ func LoadConfig(path string, docFS embed.FS) (config Config, err error) {
 	viper.SetDefault("FFUF_OUTPUT", "ffuf_out")
 	viper.SetDefault("FFUF_SF", false)
 	viper.SetDefault("FFUF_SE", false)
+
+	// WEB_OPS configs
+
+	// subzy configs
+	viper.SetDefault("SUBZY_CONCURRENCY", 10)
+	viper.SetDefault("SUBZY_TIMEOUT", 10)
+	viper.SetDefault("SUBZY_HIDE_FAILS", false)
+	viper.SetDefault("SUBZY_HTTPS", false)
+	viper.SetDefault("SUBZY_VERIFY_SSL", false)
+	viper.SetDefault("SUBZY_VULN", false)
 
 	if path == "embedded" {
 		// Use the passed embedded FS to read the config file
