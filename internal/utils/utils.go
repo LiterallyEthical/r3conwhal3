@@ -292,6 +292,12 @@ func CleanUp() {
 	if err := os.RemoveAll(tmpDir); err != nil {
 		myLogger.Error("Error deleting tmp directory: %v\n", err)
 	}
+
+	// Delete noisy output of subzy
+	subzyDir := os.ExpandEnv("$HOME/subzy")
+	if err := os.RemoveAll(subzyDir); err != nil && !os.IsNotExist(err) {
+		myLogger.Error("Error deleting subzy directory: %v\n", err)
+	}
 }
 
 // Copy file from src to dst
