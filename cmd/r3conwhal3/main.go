@@ -85,7 +85,7 @@ func handleGalery(args []string) {
 func handleRun(args []string) {
 	// Define flags
 	var domain, outDir, configDir string
-	var enableAllMods, enablePassiveEnum, enableActiveEnum, enableWebOps bool
+	var enableAllMods, enablePassiveEnum, enableActiveEnum, enableWebOps, enableVulnScan bool
 
 	runCmd := pflag.NewFlagSet("run", pflag.ExitOnError)
 	runCmd.StringVarP(&domain, "domain", "d", "", "Target domain to enumerate")
@@ -95,6 +95,7 @@ func handleRun(args []string) {
 	runCmd.BoolVarP(&enableActiveEnum, "active", "a", false, "Perform active recon process (DNS brute-force & DNS permutation)")
 	runCmd.BoolVarP(&enableAllMods, "all", "A", true, "Perform all passive & active recon process")
 	runCmd.BoolVarP(&enableWebOps, "webops", "w", false, "Perform web operations such as web screenshotting, directory fuzzing etc.")
+	runCmd.BoolVarP(&enableVulnScan, "vulnscan", "v", false, "Perform vulnerability scanning")
 	runCmd.Parse(args)
 
 	// Check if the domain is provided or not
@@ -210,6 +211,20 @@ func handleRun(args []string) {
 		},
 	}
 
+	// Set configs for VULN_SCAN
+	vulnScanCFG := mods.VulnScan{
+		OutdirPath:  outDirPath,
+		EnableSubzy: config.EnableSubzy,
+		Subzy: mods.Subzy{
+			Concurrency: config.SUBZYConcurrency,
+			Timeout:     config.SUBZYTimeout,
+			HideFails:   config.SUBZYHideFails,
+			HTTPS:       config.SUBZYHTTPS,
+			VerifySSL:   config.SUBZYVerifySSL,
+			Vuln:        config.SUBZYVuln,
+		},
+	}
+
 	// Channel to signal cleanup
 	cleanupChan := make(chan struct{})
 
@@ -236,7 +251,7 @@ func handleRun(args []string) {
 
 	// Run the app
 	go func() {
-		if err := runApplication(enablePassiveEnum, enableActiveEnum, enableWebOps, passiveEnumCFG, activeEnumCFG, webopsCFG, outDirPath, cleanupChan, closeCleanupChan); err != nil {
+		if err := runApplication(enablePassiveEnum, enableActiveEnum, enableWebOps, enableVulnScan, passiveEnumCFG, activeEnumCFG, webopsCFG, vulnScanCFG, outDirPath, cleanupChan, closeCleanupChan); err != nil {
 			myLogger.Error("Error while running r3conwhal3: %v", err)
 			// Signal to cleanup
 			closeCleanupChan()
@@ -254,7 +269,7 @@ func handleRun(args []string) {
 	}
 }
 
-func runApplication(enablePassiveEnum, enableActiveEnum, enableWebOps bool, passiveEnumCFG mods.PassiveEnum, activeEnumCFG mods.ActiveEnum, webopsCFG mods.WebOps, outDirPath string, cleanupChan chan struct{}, closeCleanupChan func()) error {
+func runApplication(enablePassiveEnum, enableActiveEnum, enableWebOps, enableVulnScan bool, passiveEnumCFG mods.PassiveEnum, activeEnumCFG mods.ActiveEnum, webopsCFG mods.WebOps, vulnScanCFG mods.VulnScan, outDirPath string, cleanupChan chan struct{}, closeCleanupChan func()) error {
 	defer closeCleanupChan()
 
 	// Run passive enumeration if enabled or no flags are provided (default behavior)
@@ -282,25 +297,31 @@ func runApplication(enablePassiveEnum, enableActiveEnum, enableWebOps bool, pass
 			myLogger.Error("Error in InitWebOps:", err)
 			return err
 		}
-		if webopsCFG.EnableGowitness && webopsCFG.EnableWebGalery {
-			go func() {
-				if err := mods.RunWebServer(outDirPath); err != nil {
-					myLogger.Error("Web server error:", err)
-					closeCleanupChan()
-				}
-			}()
-			// Wait for the cleanup signal if the web server is running
-			select {
-			case <-cleanupChan:
-				fmt.Println()
-				myLogger.Warning("Cleanup signal received, stopping application tasks...")
-				return nil
-			}
-		} else {
-			// If web server is not running, return immediately after webopsCFG
-			return nil
+	}
+
+	if enableVulnScan || (!enableVulnScan && !enableWebOps && !enableActiveEnum && !enablePassiveEnum) {
+		if err := mods.InitVulnScan(vulnScanCFG); err != nil {
+			myLogger.Error("Error in InitVulnScan:", err)
+			return err
 		}
 	}
 
-	return nil
+	if webopsCFG.EnableGowitness && webopsCFG.EnableWebGalery {
+		go func() {
+			if err := mods.RunWebServer(outDirPath); err != nil {
+				myLogger.Error("Web server error:", err)
+				closeCleanupChan()
+			}
+		}()
+		// Wait for the cleanup signal if the web server is running
+		select {
+		case <-cleanupChan:
+			fmt.Println()
+			myLogger.Warning("Cleanup signal received, stopping application tasks...")
+			return nil
+		}
+	} else {
+		// If web server is not running, return immediately after webopsCFG
+		return nil
+	}
 }
