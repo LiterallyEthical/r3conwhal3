@@ -97,6 +97,7 @@ r3conwhal3 [run] [galery] options
 | run          | -o, --out-dir    | Directory to keep all output (default "$HOME/r3conwhal3/results") |
 | run          | -p, --passive    | Perform passive subdomain enumeration process                     |
 | run          | -w, --webops     | Perform web operations                                            |
+| run          | -v, --vulnscan   | Perform vulnerability scanning                                    |
 | galery       | -p, --path       | Path to screenshots directory                                     |
 | run & galery | -h, --help       | Show help menu                                                    |
 
@@ -155,6 +156,12 @@ r3conwhal3 run  -d <domain> [-c <path-to-config-dir>] [-outDir <path-to-out-dir>
 |  1  | [httpx](https://github.com/projectdiscovery/httpx/tree/v1.3.7) | filtering live domains from the gathered subdomains |
 |  2  | [gowitness](https://github.com/sensepost/gowitness)            | taking screenshots of filtered live domains         |
 |  3  | [ffuf](https://github.com/ffuf/ffuf)                           | directory discovery & fuzzing                       |
+
+### Vulnerability Scanning
+
+| ID  | Tool                                         | Role                                     |
+| :-: | :------------------------------------------- | :--------------------------------------- |
+|  1  | [subzy](https://github.com/PentestPad/subzy) | subdomain takeover vulnerability checker |
 
 ## Disclaimer
 
