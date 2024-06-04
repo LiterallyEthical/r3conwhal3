@@ -21,7 +21,7 @@ import (
 )
 
 var (
-	cmds     = []string{"subfinder", "assetfinder", "amass", "httpx", "massdns", "puredns", "gotator", "gowitness", "ffuf"}
+	cmds     = []string{"subfinder", "assetfinder", "amass", "httpx", "massdns", "puredns", "gotator", "gowitness", "ffuf", "subzy"}
 	myLogger = logger.GetLogger()
 	//go:embed docs/*
 	docFS          embed.FS
