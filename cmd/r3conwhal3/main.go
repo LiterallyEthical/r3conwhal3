@@ -306,7 +306,7 @@ func runApplication(enablePassiveEnum, enableActiveEnum, enableWebOps, enableVul
 		}
 	}
 
-	if webopsCFG.EnableGowitness && webopsCFG.EnableWebGalery {
+	if enableWebOps && webopsCFG.EnableGowitness && webopsCFG.EnableWebGalery {
 		go func() {
 			if err := mods.RunWebServer(outDirPath); err != nil {
 				myLogger.Error("Web server error:", err)
