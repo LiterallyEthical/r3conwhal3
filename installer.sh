@@ -23,6 +23,7 @@ declare -A tools=(
     ["gotator"]="github.com/Josue87/gotator@latest"
     ["gowitness"]="github.com/sensepost/gowitness@latest"
     ["ffuf"]="github.com/ffuf/ffuf/v2@latest"
+    ["subzy"]="github.com/LukaSikic/subzy@latest"
   )
 
 # Function to check if a tool is installed
