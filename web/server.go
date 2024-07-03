@@ -139,8 +139,6 @@ func StartServer(imageDir string) error {
 				if protocolIndex != -1 {
 					url = url[:protocolIndex] + "://" + url[protocolIndex+1:]
 				}
-				// Replace remaining dashes with dots
-				// url := strings.Replace(url, "-", ".", -1)
 				images = append(images, Image{Name: fileName, URL: url})
 			}
 		}
