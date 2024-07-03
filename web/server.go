@@ -133,14 +133,14 @@ func StartServer(imageDir string) error {
 			if !file.IsDir() {
 				fileName := file.Name()
 				// Remove the file extension
-				nameWithoutExt := strings.TrimSuffix(fileName, ".png")
+				url := strings.TrimSuffix(fileName, ".png")
 				// Replace the first dash with "://"
-				protocolIndex := strings.Index(nameWithoutExt, "-")
+				protocolIndex := strings.Index(url, "-")
 				if protocolIndex != -1 {
-					nameWithoutExt = nameWithoutExt[:protocolIndex] + "://" + nameWithoutExt[protocolIndex+1:]
+					url = url[:protocolIndex] + "://" + url[protocolIndex+1:]
 				}
 				// Replace remaining dashes with dots
-				url := strings.Replace(nameWithoutExt, "-", ".", -1)
+				// url := strings.Replace(url, "-", ".", -1)
 				images = append(images, Image{Name: fileName, URL: url})
 			}
 		}
